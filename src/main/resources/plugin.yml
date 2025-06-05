@@ -2,16 +2,19 @@ name: MinigamesPlugin
 main: com.yourname.minigames.MinigamesPlugin
 version: 1.0.0
 api-version: 1.21
-author: YourName
+author: AurorasChaos
+
 commands:
   minigames:
-    description: Main command for minigames.
+    description: Main command for minigames (join, leave, stats, etc.)
     usage: /minigames <subcommand>
     permission: minigames.play
-  party:
-    description: Party management commands.
-    usage: /party <subcommand>
-    permission: minigames.party
+
+  mgui:
+    description: Opens the Minigames GUI
+    usage: /mgui
+    permission: minigames.play
+
 permissions:
   minigames.admin:
     description: Access to all admin commands.
@@ -22,4 +25,5 @@ permissions:
   minigames.party:
     description: Allows players to create and manage parties.
     default: true
+
 softdepend: [PlaceholderAPI, Citizens]
