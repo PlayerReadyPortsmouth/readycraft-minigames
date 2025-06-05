@@ -1,5 +1,9 @@
 name: Build, Release, and Archive Minigames Plugin JAR
 
+# Grant write permission to contents so create-release can work
+permissions:
+  contents: write
+
 on:
   push:
     branches:
@@ -30,7 +34,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      # 4) Build the plugin (this will compile against Java 21 and run Shade/Javadoc plugins)
+      # 4) Build the plugin
       - name: Build with Maven
         run: mvn --batch-mode clean package
 
