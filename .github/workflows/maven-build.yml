@@ -1,0 +1,58 @@
+name: Build, Release, and Archive JAR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Check out the repository
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # 2) Set up JDK 11 (adjust java-version if you need a different version)
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      # 3) Cache Maven dependencies to speed up builds
+      - name: Cache Maven local repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      # 4) Build the Maven project and produce the .jar in target/
+      - name: Build with Maven
+        run: mvn --batch-mode clean package
+
+      # 5) Create a GitHub Release tagged with the current commit SHA
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          draft: false
+          prerelease: false
+
+      # 6) Upload the built JAR as an asset under that Release
+      - name: Upload JAR to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: target/*.jar
+          asset_name: my-app-${{ github.sha }}.jar
+          asset_content_type: application/java-archive

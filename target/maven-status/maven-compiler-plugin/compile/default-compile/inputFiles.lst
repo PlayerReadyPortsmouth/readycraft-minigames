@@ -2,6 +2,7 @@
 /home/user/readycraft-minigames/src/main/java/com/yourname/minigames/party/PartyManager.java
 /home/user/readycraft-minigames/src/main/java/com/yourname/minigames/stats/StatsManager.java
 /home/user/readycraft-minigames/src/main/java/com/yourname/minigames/game/GameInstance.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/integrations/MinigamesPlaceholderExpansion.java
 /home/user/readycraft-minigames/src/main/java/com/yourname/minigames/game/GameMode.java
 /home/user/readycraft-minigames/src/main/java/com/yourname/minigames/util/SpectatorUtil.java
 /home/user/readycraft-minigames/src/main/java/com/yourname/minigames/MinigamesPlugin.java
