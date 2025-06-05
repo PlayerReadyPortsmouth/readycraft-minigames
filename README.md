@@ -1,6 +1,6 @@
 # Minigames Plugin
 
-![GitHub Release](https://img.shields.io/github/v/release/yourname/minigames-plugin)
+![GitHub Release](https://img.shields.io/github/v/release/AurorasChaos/readycraft-minigames)
 ![Java Version](https://img.shields.io/badge/java-17+-blue)
 ![Paper Version](https://img.shields.io/badge/paper-1.21.5--R0.1--SNAPSHOT-success)
 [![Build, Release, and Archive Minigames Plugin JAR](https://github.com/AurorasChaos/readycraft-minigames/actions/workflows/maven-build.yml/badge.svg)](https://github.com/AurorasChaos/readycraft-minigames/actions/workflows/maven-build.yml)
