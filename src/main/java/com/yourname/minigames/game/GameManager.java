@@ -585,4 +585,41 @@ public boolean removeFromActiveGame(Player player) {
     return false;
 }
 
+// ----------------------------------------------------------------
+// 5) NEW ACCESSORS FOR PLACEHOLDERAPI
+// ----------------------------------------------------------------
+
+/**
+ * @return The total number of running GameInstance objects.
+ */
+public int getActiveGameCount() {
+    return activeGames.size();
+}
+
+/**
+ * @return The total number of queued entries (QueueEntry objects) across all modes for a given gameType.
+ *   Example: if 2 people are queued in TNT_RUN_CLASSIC and 3 in TNT_RUN_HARDCORE, this returns 5.
+ */
+public int getTotalQueuedForType(String gameType) {
+    int total = 0;
+    // Iterate over all queueMap keys like "TNT_RUN_CLASSIC" or "BED_WARS_TEAMS"
+    for (Map.Entry<String, Queue<QueueEntry>> entry : queueMap.entrySet()) {
+        String key = entry.getKey(); // e.g. "TNT_RUN_CLASSIC"
+        if (key.startsWith(gameType.toUpperCase() + "_")) {
+            total += entry.getValue().size();
+        }
+    }
+    return total;
+}
+
+/**
+ * @return The number of queued entries (QueueEntry objects) for a specific gameType + mode.
+ *   Example: getQueuedCount("TNT_RUN", GameMode.CLASSIC) returns size of queueMap.get("TNT_RUN_CLASSIC").
+ */
+public int getQueuedCount(String gameType, GameMode mode) {
+    String key = buildQueueKey(gameType, mode);
+    Queue<QueueEntry> queue = queueMap.get(key);
+    return (queue == null) ? 0 : queue.size();
+}
+
 }
