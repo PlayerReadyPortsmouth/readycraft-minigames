@@ -8,7 +8,9 @@ import com.yourname.minigames.util.SpectatorUtil;
 import com.yourname.minigames.game.GameMode;
 
 import com.sk89q.worldedit.math.BlockVector3;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -18,11 +20,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * A polished TNTRunGame implementation extending GameInstance.
@@ -76,8 +78,16 @@ public class TNTRunGame extends GameInstance implements Listener {
         // 2) Teleport participants and initialize alive list
         for (Player p : participants) {
             alivePlayers.add(p);
+
+            // Replace toLocation(...) with manual Location construction
             BlockVector3 originVec = arena.getOrigin();
-            p.teleport(originVec.toLocation(arena.getWorld()).add(0.5, SPAWN_Y_OFFSET, 0.5));
+            Location spawnLocation = new Location(
+                    arena.getWorld(),
+                    originVec.getX() + 0.5,
+                    originVec.getY() + SPAWN_Y_OFFSET,
+                    originVec.getZ() + 0.5
+            );
+            p.teleport(spawnLocation);
             p.getInventory().clear();
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
         }
@@ -197,7 +207,7 @@ public class TNTRunGame extends GameInstance implements Listener {
                         iterator.remove();
                         continue;
                     }
-    
+
                     // Remove any wool block directly beneath the player
                     Block beneath = p.getLocation().subtract(0, 1, 0).getBlock();
                     Material type = beneath.getType();
@@ -215,14 +225,14 @@ public class TNTRunGame extends GameInstance implements Listener {
                         default:
                             // not wool—do nothing
                     }
-    
+
                     // If the player fell into the void (Y < 0), eliminate them
                     if (p.getLocation().getY() < 0) {
                         eliminatePlayer(p);
                         iterator.remove();
                     }
                 }
-    
+
                 // Update "Players Left" on the scoreboard
                 scoreboardManager.setScoreLine(
                     getId(),
@@ -230,7 +240,7 @@ public class TNTRunGame extends GameInstance implements Listener {
                     "Players Left: " + alivePlayers.size(),
                     3
                 );
-    
+
                 // Check end condition: one or zero players remain
                 if (alivePlayers.size() <= 1) {
                     if (alivePlayers.size() == 1) {

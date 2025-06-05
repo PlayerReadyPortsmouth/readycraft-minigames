@@ -7,8 +7,17 @@ import com.yourname.minigames.stats.StatsManager;
 import com.yourname.minigames.gui.GUIManager;
 import com.yourname.minigames.commands.CommandManager;
 import com.yourname.minigames.game.GameMode;
+import com.yourname.minigames.scoreboard.ScoreboardManager;
+import com.yourname.minigames.util.CountdownTimer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class MinigamesPlugin extends JavaPlugin {
 
@@ -19,8 +28,8 @@ public class MinigamesPlugin extends JavaPlugin {
     private PartyManager partyManager;
     private StatsManager statsManager;
     private GUIManager guiManager;
-    private cmdManager CommandManager;
-    private scoreboardManager ScoreboardManager;
+    private CommandManager cmdManager;
+    private ScoreboardManager scoreboardManager;
     private CountdownTimer countdownTimer;
 
     @Override

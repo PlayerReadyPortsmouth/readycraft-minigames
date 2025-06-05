@@ -5,6 +5,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
+import com.sk89q.worldedit.math.BlockVector3;
+
 
 /**
  * Utility for putting eliminated players into spectator mode within
@@ -22,22 +24,37 @@ public class SpectatorUtil {
      */
     public static void makeSpectator(Player p, Arena arena) {
         // 1) Teleport to arena origin + small Y offset
-        Location specLocation = arena.getOrigin().toLocation(arena.getWorld()).add(0.5, 10, 0.5);
+        BlockVector3 originVec = arena.getOrigin();
+        Location specLocation = new Location(
+            arena.getWorld(),
+            originVec.getX() + 0.5,
+            originVec.getY() + 10,
+            originVec.getZ() + 0.5
+        );
         p.teleport(specLocation);
 
-        // 2) Set spectator mode
+        // 2) Set to spectator mode
         p.setGameMode(GameMode.SPECTATOR);
 
         // 3) Constrain within arena’s bounding box
-        BoundingBox box = BoundingBox.of(
-                arena.getOrigin(),
-                arena.getOrigin().add(50, 50, 50)  // adjust size or calculate based on schematic
+        // Suppose your arena “slot” is ~100×50×100. Calculate min/max as Locations:
+        Location minLoc = new Location(
+            arena.getWorld(),
+            originVec.getX(),
+            originVec.getY(),
+            originVec.getZ()
         );
-        p.setSpectatorTarget(null); // no specific entity focus
-        p.setCollidable(false);
+        Location maxLoc = new Location(
+            arena.getWorld(),
+            originVec.getX() + 100,
+            originVec.getY() + 50,
+            originVec.getZ() + 100
+        );
+        BoundingBox box = BoundingBox.of(minLoc, maxLoc);
+        // If you need to store this box somewhere or schedule a repeating task 
+        // to clamp players to this box, you can do so here.
 
-        // We’ll add a repeating task to keep them inside; plugin can call this if needed
-        // or you can rely on WorldGuard region to prevent leaving.
+        p.setCollidable(false);
     }
 
     /**

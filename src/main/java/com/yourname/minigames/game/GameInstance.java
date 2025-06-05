@@ -6,8 +6,12 @@ import com.yourname.minigames.stats.StatsManager;
 import com.yourname.minigames.game.GameMode;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+
+import com.sk89q.worldedit.math.BlockVector3;
 
 import java.util.*;
 
@@ -100,8 +104,19 @@ public abstract class GameInstance {
     public void start() {
         // 1) Teleport all participants to arena spawn/origin
         broadcastMessage("&aStarting " + type + " [" + gameMode + "]...");
+
+        // Compute a Bukkit Location from the arena's BlockVector3 origin:
+        BlockVector3 originVec = arena.getOrigin();
+        World bukkitWorld = arena.getWorld();
+        Location originLocation = new Location(
+                bukkitWorld,
+                originVec.getX(),
+                originVec.getY(),
+                originVec.getZ()
+        );
+
         for (Player p : participants) {
-            p.teleport(arena.getOrigin().toLocation(arena.getWorld()));
+            p.teleport(originLocation);
             p.getInventory().clear(); // clear inventory (minigame should kit them later)
         }
 
@@ -134,7 +149,8 @@ public abstract class GameInstance {
         // 3) Teleport participants out (plugin.getServer().getWorld("lobby") etc.)
         for (Player p : participants) {
             if (p.isOnline()) {
-                p.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
+                World mainWorld = plugin.getServer().getWorlds().get(0);
+                p.teleport(mainWorld.getSpawnLocation());
             }
         }
 

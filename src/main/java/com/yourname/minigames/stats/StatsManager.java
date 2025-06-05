@@ -1,6 +1,7 @@
 package com.yourname.minigames.stats;
 
 import com.yourname.minigames.MinigamesPlugin;
+import com.yourname.minigames.game.GameInstance;
 
 public class StatsManager {
 

@@ -134,7 +134,7 @@ public class GUIManager implements Listener {
             switch (mode) {
                 case CLASSIC:  icon = Material.PAPER; break;
                 case HARDCORE: icon = Material.IRON_SWORD; break;
-                case TEAMS:    icon = Material.BANNER; break;
+                case TEAMS:    icon = Material.WHITE_BANNER; break;
                 case SOLO:     icon = Material.FEATHER; break;
                 case TIMED:    icon = Material.CLOCK; break;
                 case INSANE:   icon = Material.TNT; break;
@@ -163,8 +163,9 @@ public class GUIManager implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player p = (Player) event.getWhoClicked();
-        Inventory inv = event.getInventory();
-        String title = inv.getTitle();
+        
+        String title = event.getView().getTitle();
+        Inventory inv  = event.getInventory();
 
         // Prevent taking items
         event.setCancelled(true);

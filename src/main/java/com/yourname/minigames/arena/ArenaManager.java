@@ -2,24 +2,26 @@ package com.yourname.minigames.arena;
 
 import com.yourname.minigames.MinigamesPlugin;
 
-import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;      // to convert Bukkit world to WE world
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;       // To convert a Bukkit World → WE world
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
-import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
+import org.bukkit.World;                                  // Bukkit’s World
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -29,7 +31,7 @@ import java.util.*;
 
 /**
  * ArenaManager dynamically creates and resets “arena slots” for each minigame instance.
- * It pastes schematics via FAWE and protects each area via WorldGuard, loading flags from config.
+ * It pastes schematics via FAWE/WorldEdit and protects each area via WorldGuard, loading flags from config.
  */
 public class ArenaManager {
 
@@ -80,10 +82,10 @@ public class ArenaManager {
     }
 
     /**
-     * Creates a new Arena instance for the given minigame type.  
-     * - Finds a free “slot” (grid) in the single world.  
-     * - Pastes the schematic.  
-     * - Creates a WorldGuard region with flags from config.
+     * Creates a new Arena instance for the given minigame type.
+     *  - Finds a free “slot” (grid) in the single world.
+     *  - Pastes the schematic.
+     *  - Creates a WorldGuard region with flags from config.
      */
     public Arena createArenaInstance(String type) {
         String key = type.toLowerCase();
@@ -119,8 +121,8 @@ public class ArenaManager {
     }
 
     /**
-     * Grid-based slot allocation:  
-     * Each existing arena occupies one grid cell spaced by 300 blocks.  
+     * Grid-based slot allocation:
+     * Each existing arena occupies one grid cell spaced by 300 blocks.
      * This simply picks the next free grid coordinate.
      */
     private BlockVector3 findAvailableSlot(World world) {
@@ -135,7 +137,7 @@ public class ArenaManager {
     }
 
     /**
-     * Uses FAWE to paste the given arena’s schematic at its origin.
+     * Uses WorldEdit (with FAWE under the hood) to paste the given arena’s schematic at its origin.
      */
     private void pasteArenaSchematic(Arena arena) {
         try {
@@ -145,26 +147,37 @@ public class ArenaManager {
                 return;
             }
 
-            ClipboardFormat format = ClipboardFormat.findByFile(schemFile);
+            // 1) Detect the correct schematic format:
+            ClipboardFormat format = ClipboardFormats.findByFile(schemFile);
             if (format == null) {
-                plugin.getLogger().warning("Unknown schematic format for file: " + schemFile.getName());
+                plugin.getLogger().warning("Unknown schematic format: " + schemFile.getName());
                 return;
             }
 
+            // 2) Read the schematic into a Clipboard:
             try (ClipboardReader reader = format.getReader(new FileInputStream(schemFile))) {
                 Clipboard clipboard = reader.read();
 
-                // Convert Bukkit world to WE world
+                // 3) Convert Bukkit’s World → WorldEdit’s World:
                 com.sk89q.worldedit.world.World weWorld = BukkitAdapter.adapt(arena.getWorld());
-                EditSession editSession = FaweAPI.getWorldEdit().newEditSession(weWorld);
 
-                // Paste clipboard into edit session
-                Operations.complete(new ClipboardHolder(clipboard)
+                // 4) Build a WorldEdit EditSession (wired to EventBus) with no limit:
+                EditSession editSession = WorldEdit
+                    .getInstance()
+                    .newEditSessionBuilder()
+                    .world(weWorld)
+                    .build();
+
+                // 5) Paste the clipboard at the arena’s origin:
+                Operations.complete(
+                    new ClipboardHolder(clipboard)
                         .createPaste(editSession)
                         .to(arena.getOrigin())
                         .ignoreAirBlocks(false)
-                        .build());
+                        .build()
+                );
 
+                // 6) Flush so that changes apply:
                 editSession.flushSession();
                 plugin.getLogger().info("Pasted schematic for arena: " + arena.getName());
             }
@@ -180,22 +193,20 @@ public class ArenaManager {
      * the schematic (e.g. 100×50×100 blocks) or you can calculate bounds from the clipboard.
      */
     private void createWorldGuardRegion(Arena arena) {
-        WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
-                .getPluginManager().getPlugin("WorldGuard");
+        RegionContainer wg = WorldGuard.getInstance().getPlatform().getRegionContainer();
+
         if (wg == null) {
             plugin.getLogger().warning("WorldGuard not found; skipping region creation.");
             return;
         }
 
-        RegionManager regionManager = wg.getRegionContainer()
-                .get(BukkitAdapter.adapt(arena.getWorld()));
+        RegionManager regionManager = wg.get(BukkitAdapter.adapt(arena.getWorld()));
         if (regionManager == null) {
             plugin.getLogger().warning("Unable to get RegionManager for world: " + arena.getWorld().getName());
             return;
         }
 
         // Define region bounds around origin:
-        // Here, we assume the schematic is no larger than 100×50×100. Adjust as needed.
         BlockVector3 min = arena.getOrigin();
         BlockVector3 max = arena.getOrigin().add(100, 50, 100);
 
@@ -203,23 +214,27 @@ public class ArenaManager {
         ProtectedCuboidRegion region = new ProtectedCuboidRegion(regionId, min, max);
 
         // Apply flags from config (if any)
-        Map<String, String> flags = minigameFlags.getOrDefault(arena.getType().toUpperCase(), Collections.emptyMap());
+        Map<String, String> flags = minigameFlags
+                .getOrDefault(arena.getType().toUpperCase(), Collections.emptyMap());
         for (Map.Entry<String, String> entry : flags.entrySet()) {
-            String flagName  = entry.getKey();
-            String flagValue = entry.getValue();
+            String flagName  = entry.getKey().toLowerCase();
+            String flagValue = entry.getValue().toUpperCase();
 
-            try {
-                Flag<?> wgFlag = Flags.fuzzyMatchFlag(regionManager.getFlagRegistry(), flagName);
-                if (wgFlag instanceof com.sk89q.worldguard.protection.flags.StateFlag) {
-                    com.sk89q.worldguard.protection.flags.StateFlag stateFlag =
-                            (com.sk89q.worldguard.protection.flags.StateFlag) wgFlag;
-                    com.sk89q.worldguard.protection.flags.StateFlag.State state =
-                            com.sk89q.worldguard.protection.flags.StateFlag.State.valueOf(flagValue);
-                    region.setFlag(stateFlag, state);
+            // Look up the flag in the global registry
+            Flag<?> wgFlag = WorldGuard.getInstance()
+                                   .getFlagRegistry().get(flagName);
+
+            if (wgFlag instanceof StateFlag) {
+                StateFlag sf = (StateFlag) wgFlag;
+                try {
+                    StateFlag.State state = StateFlag.State.valueOf(flagValue);
+                    region.setFlag(sf, state);
+                } catch (IllegalArgumentException ex) {
+                    plugin.getLogger().warning("Invalid value '" + flagValue
+                        + "' for flag " + flagName);
                 }
-            } catch (Exception e) {
-                plugin.getLogger().warning("Invalid WorldGuard flag or value: " +
-                        flagName + " = " + flagValue);
+            } else {
+                plugin.getLogger().warning("Flag not found or not a StateFlag: " + flagName);
             }
         }
 
@@ -228,7 +243,7 @@ public class ArenaManager {
     }
 
     /**
-     * Resets an arena by re‐pasting its schematic. Any WorldGuard region remains intact.
+     * Resets an arena by re-pasting its schematic. Any WorldGuard region remains intact.
      */
     public void resetArena(Arena arena) {
         pasteArenaSchematic(arena);
