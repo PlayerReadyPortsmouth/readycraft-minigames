@@ -1,6 +1,6 @@
 name: Build, Release, and Archive Minigames Plugin JAR
 
-# Grant write permission to contents so create-release can work
+# Grant write permission so create-release can work
 permissions:
   contents: write
 
@@ -18,20 +18,19 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # 2) Set up JDK 21 & enable Maven cache
+      # 2) Set up JDK 21 and enable Maven’s built-in cache
       - name: Set up JDK 21 & enable Maven cache
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
-          cache: 'maven'
+          cache: 'maven'        # <-- automatically caches ~/.m2
 
       # 3) Build the plugin (compile against Java 21, run Shade/Javadoc, etc.)
       - name: Build with Maven
         run: mvn --batch-mode clean package
 
-      # 4) Create a GitHub Release tagged with "v<commit-sha>"
-      #    We prefix with "v" so the tag isn’t exactly 40 hex chars.
+      # 4) Create a GitHub Release tagged “v<commit-sha>” (cannot be exactly 40 hex chars)
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -43,13 +42,15 @@ jobs:
           draft: false
           prerelease: false
 
-      # 5) Upload the resulting JAR(s) as assets under that Release
+      # 5) Upload the generated JAR(s) as assets under that Release
       - name: Upload built JAR(s) to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/*.jar
+          # Point at the exact filename pattern that Maven created
+          asset_path: target/minigames-plugin-*.jar
+          # The “asset_name” is only for display in GitHub; you can keep the commit-SHA in it
           asset_name: minigames-plugin-${{ github.sha }}.jar
           asset_content_type: application/java-archive
