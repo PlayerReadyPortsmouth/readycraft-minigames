@@ -1,4 +1,4 @@
-name: Build, Release, and Archive JAR
+name: Build, Release, and Archive Minigames Plugin JAR
 
 on:
   push:
@@ -10,18 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Check out the repository
+      # 1) Check out the repo so we can build it
       - name: Check out code
         uses: actions/checkout@v3
 
-      # 2) Set up JDK 17 (adjust java-version if you need a different version)
+      # 2) Install JDK 17 (matches <java.version>17</java.version> in your POM)
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 3) Cache Maven dependencies to speed up builds
+      # 3) Cache Maven’s local repository to speed up repeated builds
       - name: Cache Maven local repository
         uses: actions/cache@v3
         with:
@@ -30,7 +30,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      # 4) Build the Maven project and produce the .jar in target/
+      # 4) Build the plugin (this will compile against Java 17 and trigger your Shade/Javadoc plugins)
       - name: Build with Maven
         run: mvn --batch-mode clean package
 
@@ -46,13 +46,15 @@ jobs:
           draft: false
           prerelease: false
 
-      # 6) Upload the built JAR as an asset under that Release
-      - name: Upload JAR to Release
+      # 6) Upload the resulting JAR(s) (both “plain” and shaded) as an asset under that Release
+      - name: Upload built JAR(s) to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/*.jar
-          asset_name: my-app-${{ github.sha }}.jar
+          asset_path: |
+            target/*.jar
+          asset_name: |
+            minigames-plugin-${{ github.sha }}.jar
           asset_content_type: application/java-archive

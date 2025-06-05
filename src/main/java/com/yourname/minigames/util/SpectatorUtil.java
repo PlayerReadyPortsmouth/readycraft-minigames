@@ -50,6 +50,7 @@ public class SpectatorUtil {
             originVec.getY() + 50,
             originVec.getZ() + 100
         );
+        @SuppressWarnings("unused")
         BoundingBox box = BoundingBox.of(minLoc, maxLoc);
         // If you need to store this box somewhere or schedule a repeating task 
         // to clamp players to this box, you can do so here.
