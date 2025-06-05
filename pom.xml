@@ -21,6 +21,30 @@
     </properties>
 
     <repositories>
+        <repository>
+      <id>enginehub-repo</id>
+      <name>EngineHub Maven Repository</name>
+      <url>https://maven.enginehub.org/repo/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- FAWE (FastAsyncWorldEdit) releases -->
+    <repository>
+      <id>fawe-repo</id>
+      <name>FAWE Maven Repository</name>
+      <url>https://repo.fastasyncworldedit.net/repository/fawe-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
     <repository>
       <id>papermc</id>
       <url>https://repo.papermc.io/repository/maven-public/</url>
