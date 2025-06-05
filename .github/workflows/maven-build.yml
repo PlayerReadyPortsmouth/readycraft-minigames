@@ -30,7 +30,16 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode clean package
 
-      # 4) Create a GitHub Release tagged “v<commit-sha>” (cannot be exactly 40 hex chars)
+      # 4) Locate the built JAR (the shade plugin replaces the original artifact,
+      #    so there will be exactly one minigames-plugin-*.jar in target/)
+      - name: Find built JAR
+        id: find_jar
+        run: |
+          JAR_PATH=$(ls target/minigames-plugin-*.jar | head -n1)
+          echo "artifact_path=$JAR_PATH" >> $GITHUB_OUTPUT
+          echo "artifact_name=$(basename "$JAR_PATH")" >> $GITHUB_OUTPUT
+
+      # 5) Create a GitHub Release tagged “v<commit-sha>” (cannot be exactly 40 hex chars)
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,15 +51,13 @@ jobs:
           draft: false
           prerelease: false
 
-      # 5) Upload the generated JAR(s) as assets under that Release
-      - name: Upload built JAR(s) to Release
+      # 6) Upload the located JAR as an asset under that Release
+      - name: Upload built JAR to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          # Point at the exact filename pattern that Maven created
-          asset_path: target/minigames-plugin-*.jar
-          # The “asset_name” is only for display in GitHub; you can keep the commit-SHA in it
-          asset_name: minigames-plugin-${{ github.sha }}.jar
+          asset_path: ${{ steps.find_jar.outputs.artifact_path }}
+          asset_name: ${{ steps.find_jar.outputs.artifact_name }}
           asset_content_type: application/java-archive
