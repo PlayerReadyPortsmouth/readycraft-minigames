@@ -18,39 +18,32 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # 2) Set up JDK 21 (Paper’s API jars are compiled with Java 21, so we need Java ≥21)
-      - name: Set up JDK 21
+      # 2) Set up JDK 21 & enable Maven cache
+      - name: Set up JDK 21 & enable Maven cache
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
+          cache: 'maven'
 
-      # 3) Cache Maven’s local repository to speed up repeated builds
-      - name: Cache Maven local repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
-
-      # 4) Build the plugin
+      # 3) Build the plugin (compile against Java 21, run Shade/Javadoc, etc.)
       - name: Build with Maven
         run: mvn --batch-mode clean package
 
-      # 5) Create a GitHub Release tagged with the current commit SHA
+      # 4) Create a GitHub Release tagged with "v<commit-sha>"
+      #    We prefix with "v" so the tag isn’t exactly 40 hex chars.
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: v${{ github.sha }}
+          release_name: Release v${{ github.sha }}
           draft: false
           prerelease: false
 
-      # 6) Upload the resulting JAR(s) as assets under that Release
+      # 5) Upload the resulting JAR(s) as assets under that Release
       - name: Upload built JAR(s) to Release
         uses: actions/upload-release-asset@v1
         env:
