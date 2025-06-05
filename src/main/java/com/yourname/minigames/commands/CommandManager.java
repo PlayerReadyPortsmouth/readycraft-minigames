@@ -10,13 +10,21 @@ import org.bukkit.command.PluginCommand;
 public class CommandManager {
 
     private final MinigamesPlugin plugin;
-
+    
+    /**
+     * Constructs a new CommandManager.
+     *
+     * @param plugin The main plugin instance.
+     */
     public CommandManager(MinigamesPlugin plugin) {
         this.plugin = plugin;
     }
 
     /**
-     * Call this during onEnable() to register commands.
+     * Registers all command executors and tab completers for the plugin's commands.
+     * This method should be called during the plugin's {@code onEnable()} phase.
+     * It hooks each top-level command defined in the plugin.yml to its
+     * corresponding command handler class.
      */
     public void registerAll() {
         // 1) /minigames command

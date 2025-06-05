@@ -22,49 +22,51 @@
 
     <repositories>
         <repository>
-      <id>enginehub-repo</id>
-      <name>EngineHub Maven Repository</name>
-      <url>https://maven.enginehub.org/repo/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>papermc</id>
-      <url>https://repo.papermc.io/repository/maven-public/</url>
-    </repository>
+            <id>enginehub-repo</id>
+            <name>EngineHub Maven Repository</name>
+            <url>https://maven.enginehub.org/repo/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
         <repository>
             <id>placeholderapi-repo</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
-<repository>
+        <repository>
             <id>citizens-repo</id>
             <url>https://maven.citizensnpcs.co/repo</url>
-</repository>
+        </repository>
     </repositories>
+
     <dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>com.intellectualsites.bom</groupId>
-            <artifactId>bom-newest</artifactId> <!--  Ref: https://github.com/IntellectualSites/bom -->
-            <version>1.52</version>
-            <scope>import</scope>
-            <type>pom</type>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.intellectualsites.bom</groupId>
+                <artifactId>bom-newest</artifactId>
+                <!-- Ref: https://github.com/IntellectualSites/bom -->
+                <version>1.52</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Paper API -->
-    <dependency>
-      <groupId>io.papermc.paper</groupId>
-      <artifactId>paper-api</artifactId>
-      <version>1.21.5-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- PlaceholderAPI -->
         <dependency>
@@ -75,13 +77,13 @@
         </dependency>
 
         <!-- Citizens2 API -->
-<dependency>
-	<groupId>net.citizensnpcs</groupId>
-	<artifactId>citizensapi</artifactId>
-	<version>2.0.38-SNAPSHOT</version>
-	<type>jar</type>
-	<scope>compile</scope>
-</dependency>
+        <dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizensapi</artifactId>
+            <version>2.0.38-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Testing Libraries -->
         <dependency>
@@ -96,32 +98,33 @@
             <version>5.0.0</version>
             <scope>test</scope>
         </dependency>
-          <!-- FastAsyncWorldEdit -->
-  <dependency>
-    <groupId>com.sk89q.worldedit</groupId>
-    <artifactId>worldedit-bukkit</artifactId>
-    <version>7.2.13</version>  <!-- match your FAWE version -->
-    <scope>provided</scope>
-  </dependency>
 
-  <!-- FAWE (FastAsyncWorldEdit) API -->
+        <!-- FastAsyncWorldEdit -->
         <dependency>
-  <groupId>com.fastasyncworldedit</groupId>
-  <artifactId>FastAsyncWorldEdit-Core</artifactId>
-  <scope>provided</scope>
-</dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.2.13</version> <!-- match your FAWE version -->
+            <scope>provided</scope>
+        </dependency>
+        <!-- FAWE (FastAsyncWorldEdit) API -->
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Core</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-  <!-- WorldGuard (for region protection) -->
-  <dependency>
-    <groupId>com.sk89q.worldguard</groupId>
-    <artifactId>worldguard-bukkit</artifactId>
-    <version>7.0.7</version>  <!-- use your installed WorldGuard version -->
-    <scope>provided</scope>
-  </dependency>
+        <!-- WorldGuard (for region protection) -->
+        <dependency>
+            <groupId>com.sk89q.worldguard</groupId>
+            <artifactId>worldguard-bukkit</artifactId>
+            <version>7.0.7</version> <!-- use your installed WorldGuard version -->
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Compiler Plugin -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
@@ -130,6 +133,8 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
+            <!-- Shade Plugin (for relaunching/shading dependencies) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -152,6 +157,39 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- =========== Maven Javadoc Plugin =========== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <!-- Switched from 3.5.2 (not found) to 3.4.1 (available) -->
+                <version>3.4.1</version>  <!-- valid version in Maven Central :contentReference[oaicite:1]{index=1} -->
+                <executions>
+                    <execution>
+                        <id>generate-javadocs</id>
+                        <goals>
+                            <!-- This goal runs when you invoke mvn javadoc:javadoc -->
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--
+                        By default, Javadoc output goes to ${project.build.directory}/site/apidocs.
+                        You can override it by specifying <destDir> if you prefer a different folder.
+                    -->
+                    <!--
+                    <destDir>${project.build.directory}/docs</destDir>
+                    -->
+                    <!-- Include author and version in the generated documentation -->
+                    <doctitle>${project.name} API Documentation</doctitle>
+                    <author>true</author>
+                    <version>true</version>
+                    <!-- If your code uses UTF-8 encoding: -->
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- =========== End Maven Javadoc Plugin =========== -->
         </plugins>
     </build>
 </project>

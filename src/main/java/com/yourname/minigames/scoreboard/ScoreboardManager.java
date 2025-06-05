@@ -1,9 +1,12 @@
 package com.yourname.minigames.scoreboard;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +18,11 @@ import java.util.Map;
 public class ScoreboardManager {
 
     /** Holds the scoreboard and objective for each arena ID */
-    private final Map<String, ArenaScoreboard> arenaBoards = new HashMap<>();
+ private final Map<String, ArenaScoreboard> arenaBoards = new HashMap<>();
+
+ /**
+ * Constructs a new ScoreboardManager.
+ */
 
     /**
      * Creates (or retrieves) a scoreboard for a given arena ID.
@@ -23,8 +30,8 @@ public class ScoreboardManager {
      *
      * @param arenaId  unique ID of the arena/game instance
      * @return the ArenaScoreboard wrapper
-     */
-    public ArenaScoreboard getOrCreateScoreboard(String arenaId) {
+ */
+ public ArenaScoreboard getOrCreateScoreboard(String arenaId) {
         if (arenaBoards.containsKey(arenaId)) {
             return arenaBoards.get(arenaId);
         }
@@ -32,7 +39,7 @@ public class ScoreboardManager {
         // Create a new scoreboard
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         String objName = "arena_" + arenaId.substring(0, Math.min(10, arenaId.length()));
-        Objective obj = board.registerNewObjective(objName, "dummy", "§aArena Status");
+ Objective obj = board.registerNewObjective(objName, "dummy", ChatColor.AQUA + "Arena Status");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         ArenaScoreboard arenaBoard = new ArenaScoreboard(board, obj);
@@ -42,8 +49,11 @@ public class ScoreboardManager {
 
     /**
      * Show the arena’s scoreboard to a player (participant or spectator).
+ *
+ * @param arenaId the unique ID of the arena/game instance.
+ * @param player the player to show the scoreboard to.
      */
-    public void showToPlayer(String arenaId, Player player) {
+ public void showToPlayer(String arenaId, Player player) {
         ArenaScoreboard asb = arenaBoards.get(arenaId);
         if (asb == null) return;
         player.setScoreboard(asb.board);
@@ -51,6 +61,8 @@ public class ScoreboardManager {
 
     /**
      * Removes the scoreboard from a player (resets to default).
+ *
+ * @param player the player to remove the scoreboard from.
      */
     public void removeFromPlayer(Player player) {
         player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
@@ -64,7 +76,7 @@ public class ScoreboardManager {
      * @param text     the text to display (colored)
      * @param score    integer score (ordering)
      */
-    public void setScoreLine(String arenaId, String lineKey, String text, int score) {
+ public void setScoreLine(String arenaId, String lineKey, String text, int score) {
         ArenaScoreboard asb = getOrCreateScoreboard(arenaId);
 
         // Remove old entry if present
@@ -83,7 +95,9 @@ public class ScoreboardManager {
      * Clears all lines and unregisters the objective for the arena.
      * Call when the game ends.
      */
-    public void clearArenaScoreboard(String arenaId) {
+ public void clearArenaScoreboard(String arenaId) {
+ // Unregister the objective first to remove from all players
+
         ArenaScoreboard asb = arenaBoards.remove(arenaId);
         if (asb == null) return;
         asb.objective.unregister();
@@ -92,11 +106,22 @@ public class ScoreboardManager {
     /**
      * Internal wrapper to hold the scoreboard and its entries.
      */
-    private static class ArenaScoreboard {
+ private static class ArenaScoreboard {
+ /** The Bukkit Scoreboard instance. */
         final Scoreboard board;
+
+ /** The Objective for the sidebar display. */
         final Objective objective;
+
+ /** Map to keep track of scoreboard lines by a unique key. */
         final Map<String, Score> entries = new HashMap<>();
 
+ /**
+ * Constructs an ArenaScoreboard.
+ *
+ * @param board The Bukkit Scoreboard.
+ * @param objective The Objective for the sidebar.
+ */
         ArenaScoreboard(Scoreboard board, Objective objective) {
             this.board = board;
             this.objective = objective;

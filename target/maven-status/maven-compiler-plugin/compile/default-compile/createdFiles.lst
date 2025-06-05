@@ -6,6 +6,7 @@ com/yourname/minigames/game/TNTRunGame$2.class
 com/yourname/minigames/gui/GUIManager$1.class
 com/yourname/minigames/gui/GUIManager.class
 com/yourname/minigames/util/CountdownTimer$1.class
+com/yourname/minigames/game/GameManager$1.class
 com/yourname/minigames/game/GameInstance.class
 com/yourname/minigames/commands/CommandManager.class
 com/yourname/minigames/party/PartyManager.class

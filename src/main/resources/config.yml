@@ -2,6 +2,8 @@ minigames:
   TNT_RUN:
     display_name: "§cTNT Run"
     icon: "TNT"
+    minPlayers: 2
+    maxPlayers: 4
     lore:
       - "§7Run over the TNT platform."
       - "§7Last one standing wins!"

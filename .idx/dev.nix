@@ -11,6 +11,7 @@
     # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
     pkgs.maven
+    pkgs.openjdk17-bootstrap
   ];
   # Sets environment variables in the workspace
   env = {};
