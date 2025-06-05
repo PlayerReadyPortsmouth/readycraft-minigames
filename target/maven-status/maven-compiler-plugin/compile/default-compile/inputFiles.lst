@@ -1,0 +1,15 @@
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/arena/Arena.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/party/PartyManager.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/game/TnTRunGame.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/stats/StatsManager.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/game/GameInstance.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/util/SpectatorUtil.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/MinigamesPlugin.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/commands/CommandManager.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/commands/MGUICommand.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/arena/ArenaManager.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/game/GameManager.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/gui/GUIManager.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/util/CountdownTimer.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/scoreboard/ScoreboardManager.java
+/home/user/readycraft-minigames/src/main/java/com/yourname/minigames/commands/MinigamesCommand.java

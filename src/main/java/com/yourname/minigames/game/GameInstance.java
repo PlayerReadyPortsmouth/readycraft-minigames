@@ -3,6 +3,8 @@ package com.yourname.minigames.game;
 import com.yourname.minigames.MinigamesPlugin;
 import com.yourname.minigames.arena.Arena;
 import com.yourname.minigames.stats.StatsManager;
+import com.yourname.minigames.game.GameMode;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;

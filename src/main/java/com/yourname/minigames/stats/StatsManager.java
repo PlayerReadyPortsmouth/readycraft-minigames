@@ -10,4 +10,8 @@ public class StatsManager {
         this.plugin = plugin;
         // TODO: Implement stats tracking, PlaceholderAPI hooks
     }
+
+    public void recordGameResult(GameInstance instance) {
+        // … your logic (save winner, update DB) …
+    }
 }

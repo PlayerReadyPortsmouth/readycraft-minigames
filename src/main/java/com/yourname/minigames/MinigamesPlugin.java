@@ -6,6 +6,7 @@ import com.yourname.minigames.party.PartyManager;
 import com.yourname.minigames.stats.StatsManager;
 import com.yourname.minigames.gui.GUIManager;
 import com.yourname.minigames.commands.CommandManager;
+import com.yourname.minigames.game.GameMode;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,13 +57,19 @@ public class MinigamesPlugin extends JavaPlugin {
 
     private void initializeManagers(){
         arenaManager = new ArenaManager(this);
-        gameManager = new GameManager(this, arenaManager);
         partyManager = new PartyManager(this);
         statsManager = new StatsManager(this);
         guiManager = new GUIManager(this);
         cmdManager = new CommandManager(this);
         scoreboardManager = new ScoreboardManager();
         countdownTimer = new CountdownTimer(this, scoreboardManager);
+        gameManager = new GameManager(
+            this,
+            arenaManager,
+            partyManager,
+            statsManager,
+            guiManager
+        );
     }
 
     private Map<String, List<GameMode>> modesPerGame = new HashMap<>();

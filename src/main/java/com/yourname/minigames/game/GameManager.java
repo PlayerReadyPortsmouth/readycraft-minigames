@@ -6,6 +6,8 @@ import com.yourname.minigames.arena.ArenaManager;
 import com.yourname.minigames.party.PartyManager;
 import com.yourname.minigames.stats.StatsManager;
 import com.yourname.minigames.gui.GUIManager;
+import com.yourname.minigames.game.GameMode;
+
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -122,9 +124,6 @@ public class GameManager {
         switch (type.toUpperCase()) {
             case "TNT_RUN":
                 instance = new TNTRunGame(type, mode, plugin, arena, players);
-                break;
-            case "BED_WARS":
-                instance = new BedWarsGame(type, mode, plugin, arena, players);
                 break;
             // TODO: Add other minigame constructors here
             default:

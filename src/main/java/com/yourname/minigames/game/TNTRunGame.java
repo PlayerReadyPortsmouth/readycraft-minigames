@@ -5,6 +5,7 @@ import com.yourname.minigames.arena.Arena;
 import com.yourname.minigames.scoreboard.ScoreboardManager;
 import com.yourname.minigames.util.CountdownTimer;
 import com.yourname.minigames.util.SpectatorUtil;
+import com.yourname.minigames.game.GameMode;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
@@ -43,7 +44,7 @@ public class TNTRunGame extends GameInstance implements Listener {
     private static final int GAME_DURATION = 300;
 
     /** Handles the repeating block-removal and game logic */
-    private BukkitRunnable removalTask;
+    private BukkitTask removalTask;
 
     /** List of players still “alive” */
     private final List<Player> alivePlayers = new ArrayList<>();
@@ -95,57 +96,7 @@ public class TNTRunGame extends GameInstance implements Listener {
         countdownTimer.startCountdown(getId(), GAME_DURATION);
 
         // 5) Schedule block removal & game logic
-        removalTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Iterator<Player> it = alivePlayers.iterator();
-                while (it.hasNext()) {
-                    Player p = it.next();
-                    if (!p.isOnline()) {
-                        eliminatePlayer(p);
-                        it.remove();
-                        continue;
-                    }
-                    // Remove wool beneath player’s feet if present
-                    Block beneath = p.getLocation().subtract(0, 1, 0).getBlock();
-                    Material type = beneath.getType();
-                    if (type == Material.WHITE_WOOL ||
-                        type == Material.RED_WOOL   ||
-                        type == Material.YELLOW_WOOL||
-                        type == Material.BLUE_WOOL   ||
-                        type == Material.GREEN_WOOL  ||
-                        type == Material.ORANGE_WOOL ||
-                        type == Material.PINK_WOOL   ||
-                        type == Material.LIGHT_BLUE_WOOL) {
-                        beneath.setType(Material.AIR);
-                    }
-                    // If player fell into void (Y < 0), eliminate
-                    if (p.getLocation().getY() < 0) {
-                        eliminatePlayer(p);
-                        it.remove();
-                    }
-                }
-
-                // Update “Players Left” on scoreboard
-                scoreboardManager.setScoreLine(getId(),
-                        "players_" + getId(),
-                        "Players Left: " + alivePlayers.size(),
-                        3);
-
-                // Check end condition: only one or zero players remain
-                if (alivePlayers.size() <= 1) {
-                    if (alivePlayers.size() == 1) {
-                        Player winner = alivePlayers.get(0);
-                        broadcastMessage("§a" + winner.getName() + " wins TNT Run!");
-                        winner.playSound(winner.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
-                    } else {
-                        broadcastMessage("§eNo winners this round.");
-                    }
-                    // End the game via GameManager
-                    plugin.getGameManager().endGame(getId());
-                }
-            }
-        }.runTaskTimer(plugin, 20L, BLOCK_REMOVE_INTERVAL);
+        setupRemovalTask();
     }
 
     @Override
@@ -232,5 +183,71 @@ public class TNTRunGame extends GameInstance implements Listener {
             // WorldGuard region should already confine them
             p.setGameMode(org.bukkit.GameMode.SPECTATOR);
         }
+    }
+
+    private void setupRemovalTask() {
+        removalTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Iterator<Player> iterator = alivePlayers.iterator();
+                while (iterator.hasNext()) {
+                    Player p = iterator.next();
+                    if (!p.isOnline()) {
+                        eliminatePlayer(p);
+                        iterator.remove();
+                        continue;
+                    }
+    
+                    // Remove any wool block directly beneath the player
+                    Block beneath = p.getLocation().subtract(0, 1, 0).getBlock();
+                    Material type = beneath.getType();
+                    switch (type) {
+                        case WHITE_WOOL:
+                        case RED_WOOL:
+                        case YELLOW_WOOL:
+                        case BLUE_WOOL:
+                        case GREEN_WOOL:
+                        case ORANGE_WOOL:
+                        case PINK_WOOL:
+                        case LIGHT_BLUE_WOOL:
+                            beneath.setType(Material.AIR);
+                            break;
+                        default:
+                            // not wool—do nothing
+                    }
+    
+                    // If the player fell into the void (Y < 0), eliminate them
+                    if (p.getLocation().getY() < 0) {
+                        eliminatePlayer(p);
+                        iterator.remove();
+                    }
+                }
+    
+                // Update "Players Left" on the scoreboard
+                scoreboardManager.setScoreLine(
+                    getId(),
+                    "players_" + getId(),
+                    "Players Left: " + alivePlayers.size(),
+                    3
+                );
+    
+                // Check end condition: one or zero players remain
+                if (alivePlayers.size() <= 1) {
+                    if (alivePlayers.size() == 1) {
+                        Player winner = alivePlayers.get(0);
+                        broadcastMessage("§a" + winner.getName() + " wins TNT Run!");
+                        winner.playSound(
+                            winner.getLocation(),
+                            Sound.UI_TOAST_CHALLENGE_COMPLETE,
+                            1.0f, 1.0f
+                        );
+                    } else {
+                        broadcastMessage("§eNo winners this round.");
+                    }
+                    // End the game (reset arena, free slot, record stats, etc.)
+                    plugin.getGameManager().endGame(getId());
+                }
+            }
+        }.runTaskTimer(plugin, 20L, BLOCK_REMOVE_INTERVAL);
     }
 }
