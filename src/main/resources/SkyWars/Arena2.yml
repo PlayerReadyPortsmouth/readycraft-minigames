@@ -1,0 +1,56 @@
+# SkyWars/Arena2.yml
+
+name: "Island Heights"
+schematic: "islandheights.schem"
+
+center:
+  x: 100
+  y: 75
+  z: 100
+
+spawns:
+  - x: 110
+    y: 80
+    z: 110
+
+  - x: 90
+    y: 80
+    z: 110
+
+  - x: 90
+    y: 80
+    z: 90
+
+  - x: 110
+    y: 80
+    z: 90
+
+  - x: 100
+    y: 80
+    z: 100
+
+loot_table:
+  - type: IRON_SWORD
+    weight: 4
+
+  - type: BOW
+    amount: 1
+    weight: 3
+
+  - type: ARROW
+    amount: 8
+    weight: 4
+
+  - type: GOLDEN_APPLE
+    amount: 1
+    weight: 2
+
+  - type: ENDER_PEARL
+    weight: 1
+
+  - type: IRON_CHESTPLATE
+    weight: 1
+
+  - type: COOKED_CHICKEN
+    amount: 3
+    weight: 5

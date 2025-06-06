@@ -1,0 +1,67 @@
+# SkyWars/Arena1.yml
+
+name: "Sky Clash"
+schematic: "skyclash.schem"
+
+# Center (where the schematic pastes, and around which the arena shrinks)
+center:
+  x: 0
+  y: 64
+  z: 0
+
+# List of spawn locations for each player island (x, y, z relative to world)
+# You can list as many as you need; participants cycle through this list.
+spawns:
+  - x: 10
+    y: 70
+    z: 10
+
+  - x: -10
+    y: 70
+    z: 10
+
+  - x: -10
+    y: 70
+    z: -10
+
+  - x: 10
+    y: 70
+    z: -10
+
+  - x: 5
+    y: 70
+    z: 0
+
+  - x: 0
+    y: 70
+    z: 5
+
+# Specific loot table for Arena1 (overrides Defaults.yml)
+loot_table:
+  - type: DIAMOND_SWORD
+    weight: 2
+
+  - type: IRON_SWORD
+    weight: 3
+
+  - type: BOW
+    amount: 1
+    weight: 2
+
+  - type: ARROW
+    amount: 12
+    weight: 4
+
+  - type: APPLE
+    amount: 4
+    weight: 6
+
+  - type: ENDER_PEARL
+    weight: 1
+
+  - type: DIAMOND_HELMET
+    weight: 1
+
+  - type: COOKED_BEEF
+    amount: 3
+    weight: 5

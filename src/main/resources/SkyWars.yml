@@ -1,0 +1,37 @@
+# Global SkyWars settings
+
+minPlayers: 4
+maxPlayers: 16
+
+# Warning time before an event actually activates (in seconds)
+event_warning_time: 15
+
+# Interval between events (in seconds)
+event_interval: 90
+
+# Shrink settings
+shrink_start: 180            # how many seconds until the first shrink begins
+shrink_interval: 10          # seconds between each shrink step
+shrink_speed: 1              # blocks removed per shrink step
+
+# Define random events (name → weight, duration, announcement message)
+events:
+  double_damage:
+    weight: 2
+    duration: 30
+    announce: "§eDouble Damage starts in 15 seconds!"
+
+  no_healing:
+    weight: 1
+    duration: 20
+    announce: "§cNo Healing starts in 15 seconds!"
+
+  speed_rush:
+    weight: 1
+    duration: 25
+    announce: "§aSpeed Rush in 15 seconds! Get ready!"
+
+  low_gravity:
+    weight: 1
+    duration: 20
+    announce: "§bLow Gravity in 15 seconds! Jump far!"

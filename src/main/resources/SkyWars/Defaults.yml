@@ -1,0 +1,27 @@
+# Default (fallback) loot table for any arena that does not override it
+
+loot_table:
+  - type: STONE_SWORD
+    weight: 5
+
+  - type: BOW
+    amount: 1
+    weight: 3
+
+  - type: ARROW
+    amount: 16
+    weight: 4
+
+  - type: APPLE
+    amount: 2
+    weight: 8
+
+  - type: STONE_PICKAXE
+    weight: 2
+
+  - type: LEATHER_HELMET
+    weight: 3
+
+  - type: BREAD
+    amount: 5
+    weight: 6
