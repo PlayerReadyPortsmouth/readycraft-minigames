@@ -6,9 +6,11 @@ import com.auroraschaos.minigames.game.GameMode;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 
 import org.bukkit.Bukkit;
@@ -26,7 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.player.PlayerDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -35,9 +37,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -272,7 +274,7 @@ public class SkyWarsGame extends GameInstance implements Listener {
     // ---------- SCHEMATIC PASTING & CHEST DETECTION ----------
 
     /**
-     * Paste the schematic at shrinkCenter using WorldEdit, then scan the pasted region
+     * Paste the schematic at shrinkCenter using WorldEdit 7+ API, then scan the pasted region
      * for all Chest blocks and record their locations.
      */
     private void pasteSchematicAndDetectChests() {
@@ -286,31 +288,36 @@ public class SkyWarsGame extends GameInstance implements Listener {
             // Load schematic into a WorldEdit Clipboard
             Clipboard clipboard;
             try (FileInputStream fis = new FileInputStream(schematic)) {
-                ClipboardReader reader = ClipboardFormats.findByFile(schematic).getReader(fis);
-                clipboard = reader.read(null);
+                ClipboardReader reader = com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats.findByFile(schematic).getReader(fis);
+                clipboard = reader.read();
+            } catch (IOException e) {
+                plugin.getLogger().severe("Failed to read schematic “" + schematicFile + "”: " + e.getMessage());
+                return;
             }
 
-            // Paste the clipboard at shrinkCenter
+            // Paste the clipboard at shrinkCenter using the correct WorldEdit 7+ pattern
             com.sk89q.worldedit.world.World weWorld = new BukkitWorld(arena.getWorld());
-            EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld);
-
-            BlockVector3 pastePos = BlockVector3.at(
-                shrinkCenter.getBlockX(),
-                shrinkCenter.getBlockY(),
-                shrinkCenter.getBlockZ()
-            );
-
-            clipboard.paste(editSession, pastePos, false, true, null);
-            editSession.close();
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld)) {
+                Operation operation = new com.sk89q.worldedit.session.ClipboardHolder(clipboard)
+                    .createPaste(editSession)
+                    .to(BlockVector3.at(
+                        shrinkCenter.getBlockX(),
+                        shrinkCenter.getBlockY(),
+                        shrinkCenter.getBlockZ()
+                    ))
+                    .ignoreAirBlocks(false)
+                    .build();
+                Operations.complete(operation);
+            }
 
             // Determine pasted region bounds
             int w = clipboard.getDimensions().getX();
             int h = clipboard.getDimensions().getY();
             int d = clipboard.getDimensions().getZ();
 
-            int minX = pastePos.getX();
-            int minY = pastePos.getY();
-            int minZ = pastePos.getZ();
+            int minX = shrinkCenter.getBlockX();
+            int minY = shrinkCenter.getBlockY();
+            int minZ = shrinkCenter.getBlockZ();
             int maxX = minX + w;
             int maxY = minY + h;
             int maxZ = minZ + d;
@@ -329,7 +336,7 @@ public class SkyWarsGame extends GameInstance implements Listener {
                 }
             }
         } catch (Exception ex) {
-            plugin.getLogger().severe("Failed to paste schematic for arena " + arena.getName() + ": " + ex.getMessage());
+            plugin.getLogger().severe("Unexpected error while pasting schematic: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -460,24 +467,27 @@ public class SkyWarsGame extends GameInstance implements Listener {
 
         int r = lootRng.nextInt(totalWeight);
         int cumulative = 0;
-        EventDef chosen = null;
+        EventDef chosenLocal = null;
         for (EventDef def : globalEvents.values()) {
             cumulative += def.weight;
             if (r < cumulative) {
-                chosen = def;
+                chosenLocal = def;
                 break;
             }
         }
-        if (chosen == null) return;
+        if (chosenLocal == null) return;
+
+        // Store in a final local for use in the inner class
+        final EventDef eventToActivate = chosenLocal;
 
         // Announce warning
-        broadcastMessage(chosen.announceText);
+        broadcastMessage(eventToActivate.announceText);
 
         // Activate event after warning time
         new BukkitRunnable() {
             @Override
             public void run() {
-                activateEvent(chosen);
+                activateEvent(eventToActivate);
             }
         }.runTaskLater(plugin, 20L * eventWarningTime);
     }
