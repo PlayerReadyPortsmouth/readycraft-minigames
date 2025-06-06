@@ -1,11 +1,12 @@
-package com.yourname.minigames.commands;
+package com.auroraschaos.minigames.commands;
 
-import com.yourname.minigames.MinigamesPlugin;
-import com.yourname.minigames.game.GameManager;
-import com.yourname.minigames.game.GameMode;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.game.GameManager;
+import com.auroraschaos.minigames.game.GameMode;
 
 import java.util.*;
 

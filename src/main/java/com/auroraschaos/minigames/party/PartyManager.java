@@ -1,6 +1,6 @@
-package com.yourname.minigames.party;
+package com.auroraschaos.minigames.party;
 
-import com.yourname.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.MinigamesPlugin;
 
 /**
  * Manages player parties.

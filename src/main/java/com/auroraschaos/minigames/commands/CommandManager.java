@@ -1,7 +1,8 @@
-package com.yourname.minigames.commands;
+package com.auroraschaos.minigames.commands;
 
-import com.yourname.minigames.MinigamesPlugin;
 import org.bukkit.command.PluginCommand;
+
+import com.auroraschaos.minigames.MinigamesPlugin;
 
 /**
  * CommandManager registers all command executors and tab completers.

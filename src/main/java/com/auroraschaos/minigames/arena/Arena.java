@@ -1,4 +1,4 @@
-package com.yourname.minigames.arena;
+package com.auroraschaos.minigames.arena;
 
 import org.bukkit.World;
 import com.sk89q.worldedit.math.BlockVector3;

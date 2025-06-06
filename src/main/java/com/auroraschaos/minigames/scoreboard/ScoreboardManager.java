@@ -1,4 +1,4 @@
-package com.yourname.minigames.scoreboard;
+package com.auroraschaos.minigames.scoreboard;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;

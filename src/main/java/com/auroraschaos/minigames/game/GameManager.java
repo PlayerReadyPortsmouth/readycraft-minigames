@@ -1,12 +1,11 @@
-package com.yourname.minigames.game;
+package com.auroraschaos.minigames.game;
 
-import com.yourname.minigames.MinigamesPlugin;
-import com.yourname.minigames.arena.Arena;
-import com.yourname.minigames.arena.ArenaManager;
-import com.yourname.minigames.party.PartyManager;
-import com.yourname.minigames.stats.StatsManager;
-import com.yourname.minigames.gui.GUIManager;
-
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.arena.Arena;
+import com.auroraschaos.minigames.arena.ArenaManager;
+import com.auroraschaos.minigames.gui.GUIManager;
+import com.auroraschaos.minigames.party.PartyManager;
+import com.auroraschaos.minigames.stats.StatsManager;
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

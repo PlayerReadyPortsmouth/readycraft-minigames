@@ -1,15 +1,4 @@
-package com.yourname.minigames;
-
-import com.yourname.minigames.game.GameManager;
-import com.yourname.minigames.arena.ArenaManager;
-import com.yourname.minigames.party.PartyManager;
-import com.yourname.minigames.stats.StatsManager;
-import com.yourname.minigames.gui.GUIManager;
-import com.yourname.minigames.integrations.MinigamesPlaceholderExpansion;
-import com.yourname.minigames.commands.CommandManager;
-import com.yourname.minigames.game.GameMode;
-import com.yourname.minigames.scoreboard.ScoreboardManager;
-import com.yourname.minigames.util.CountdownTimer;
+package com.auroraschaos.minigames;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.auroraschaos.minigames.arena.ArenaManager;
+import com.auroraschaos.minigames.commands.CommandManager;
+import com.auroraschaos.minigames.game.GameManager;
+import com.auroraschaos.minigames.game.GameMode;
+import com.auroraschaos.minigames.gui.GUIManager;
+import com.auroraschaos.minigames.integrations.MinigamesPlaceholderExpansion;
+import com.auroraschaos.minigames.party.PartyManager;
+import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
+import com.auroraschaos.minigames.stats.StatsManager;
+import com.auroraschaos.minigames.util.CountdownTimer;
+
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**

@@ -1,10 +1,11 @@
-package com.yourname.minigames.util;
+package com.auroraschaos.minigames.util;
 
-import com.yourname.minigames.arena.Arena;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
+
+import com.auroraschaos.minigames.arena.Arena;
 import com.sk89q.worldedit.math.BlockVector3;
 
 

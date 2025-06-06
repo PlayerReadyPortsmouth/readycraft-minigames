@@ -1,10 +1,11 @@
-package com.yourname.minigames.stats;
+package com.auroraschaos.minigames.stats;
 
-import com.yourname.minigames.MinigamesPlugin;
-import com.yourname.minigames.game.GameInstance;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.game.GameInstance;
 
 import java.io.File;
 import java.io.IOException;

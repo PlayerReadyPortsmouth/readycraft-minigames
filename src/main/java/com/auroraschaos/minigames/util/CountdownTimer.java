@@ -1,8 +1,9 @@
-package com.yourname.minigames.util;
+package com.auroraschaos.minigames.util;
 
-import com.yourname.minigames.scoreboard.ScoreboardManager;
-import com.yourname.minigames.MinigamesPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
 
 import java.util.HashMap;
 import java.util.Map;

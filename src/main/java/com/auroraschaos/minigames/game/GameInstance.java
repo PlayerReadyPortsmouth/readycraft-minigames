@@ -1,9 +1,4 @@
-package com.yourname.minigames.game;
-
-import com.yourname.minigames.MinigamesPlugin;
-import com.yourname.minigames.arena.Arena;
-import com.yourname.minigames.stats.StatsManager;
-import com.yourname.minigames.game.GameMode;
+package com.auroraschaos.minigames.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,6 +6,10 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.arena.Arena;
+import com.auroraschaos.minigames.game.GameMode;
+import com.auroraschaos.minigames.stats.StatsManager;
 import com.sk89q.worldedit.math.BlockVector3;
 
 import java.util.*;

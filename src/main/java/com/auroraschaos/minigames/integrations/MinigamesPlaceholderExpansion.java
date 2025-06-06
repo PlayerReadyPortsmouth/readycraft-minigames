@@ -1,12 +1,13 @@
-package com.yourname.minigames.integrations;
+package com.auroraschaos.minigames.integrations;
 
-import com.yourname.minigames.MinigamesPlugin;
-import com.yourname.minigames.game.GameManager;
-import com.yourname.minigames.game.GameMode;
-import com.yourname.minigames.stats.StatsManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.game.GameManager;
+import com.auroraschaos.minigames.game.GameMode;
+import com.auroraschaos.minigames.stats.StatsManager;
 
 import java.util.UUID;
 

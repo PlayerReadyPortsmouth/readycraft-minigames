@@ -1,12 +1,11 @@
-package com.yourname.minigames.game;
+package com.auroraschaos.minigames.game;
 
-import com.yourname.minigames.MinigamesPlugin;
-import com.yourname.minigames.arena.Arena;
-import com.yourname.minigames.scoreboard.ScoreboardManager;
-import com.yourname.minigames.util.CountdownTimer;
-import com.yourname.minigames.util.SpectatorUtil;
-import com.yourname.minigames.game.GameMode;
-
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.arena.Arena;
+import com.auroraschaos.minigames.game.GameMode;
+import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
+import com.auroraschaos.minigames.util.CountdownTimer;
+import com.auroraschaos.minigames.util.SpectatorUtil;
 import com.sk89q.worldedit.math.BlockVector3;
 
 import org.bukkit.Bukkit;

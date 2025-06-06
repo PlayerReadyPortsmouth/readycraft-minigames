@@ -1,4 +1,4 @@
-package com.yourname.minigames.game;
+package com.auroraschaos.minigames.game;
 
 /**
  * Defines the various game modes available for each minigame.

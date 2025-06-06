@@ -1,7 +1,5 @@
-package com.yourname.minigames.gui;
+package com.auroraschaos.minigames.gui;
 
-import com.yourname.minigames.MinigamesPlugin;
-import com.yourname.minigames.game.GameMode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,6 +12,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.game.GameMode;
 
 import java.util.*;
 
