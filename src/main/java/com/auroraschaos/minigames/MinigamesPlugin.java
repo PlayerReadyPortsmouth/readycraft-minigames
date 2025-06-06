@@ -14,6 +14,7 @@ import com.auroraschaos.minigames.game.GameMode;
 import com.auroraschaos.minigames.gui.GUIManager;
 import com.auroraschaos.minigames.integrations.MinigamesPlaceholderExpansion;
 import com.auroraschaos.minigames.party.PartyManager;
+import com.auroraschaos.minigames.scoreboard.QueueScoreboardManager;
 import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
 import com.auroraschaos.minigames.stats.StatsManager;
 import com.auroraschaos.minigames.util.CountdownTimer;
@@ -38,6 +39,7 @@ public class MinigamesPlugin extends JavaPlugin {
     private CommandManager cmdManager;
     private ScoreboardManager scoreboardManager;
     private CountdownTimer countdownTimer;
+    private QueueScoreboardManager queueSB;
 
     /**
      * Called when the plugin is enabled.
@@ -54,18 +56,17 @@ public class MinigamesPlugin extends JavaPlugin {
 
         // Initialize managers
         initializeManagers();
-
         getLogger().info("Managers initialized.");
 
         // Register commands
         cmdManager.registerAll();
+        getLogger().info("Commands Registered.");
 
         // Register events
         registerEvents();
 
         //Hook into APIs
         hookIntoAPIs();
-
         getLogger().info("MinigamesPlugin has been enabled!");
     }
 
@@ -97,6 +98,7 @@ public class MinigamesPlugin extends JavaPlugin {
             statsManager,
             guiManager
         );
+        queueSB = new QueueScoreboardManager(this, gameManager);
     }
 
     private Map<String, List<GameMode>> modesPerGame = new HashMap<>();
@@ -213,5 +215,9 @@ public class MinigamesPlugin extends JavaPlugin {
      */
     public CountdownTimer getCountdownTimer() {
         return countdownTimer;
+    }
+
+    public QueueScoreboardManager getQueueScoreboardManager(){
+        return queueSB;
     }
 }

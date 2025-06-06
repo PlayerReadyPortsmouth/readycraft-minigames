@@ -6,6 +6,8 @@ import com.auroraschaos.minigames.arena.ArenaManager;
 import com.auroraschaos.minigames.gui.GUIManager;
 import com.auroraschaos.minigames.party.PartyManager;
 import com.auroraschaos.minigames.stats.StatsManager;
+import com.auroraschaos.minigames.scoreboard.QueueScoreboardManager;
+import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -44,6 +46,7 @@ public class GameManager {
     private final PartyManager partyManager;
     private final StatsManager statsManager;
     private final GUIManager guiManager;
+    private final QueueScoreboardManager queueSB;
 
     /** Keeps a queue of players (or parties) waiting for a particular minigame+mode. */
     private final Map<String, Queue<QueueEntry>> queueMap = new HashMap<>();
@@ -70,6 +73,7 @@ public class GameManager {
         this.partyManager = partyManager;
         this.statsManager = statsManager;
         this.guiManager   = guiManager;
+        this.queueSB      = new QueueScoreboardManager(plugin, this);
 
         // Optional: periodic heartbeat to update action-bar even if no join/leave event
         startQueueHeartbeat();
@@ -97,6 +101,7 @@ public class GameManager {
         // Add this entry to the queue
         QueueEntry entry = new QueueEntry(entrants);
         queue.add(entry);
+        plugin.getQueueScoreboardManager().updateQueueScoreboard(type, mode);
         plugin.getLogger().info("Enqueued " + entrants.size()
                 + " player(s) for " + type + " [" + mode + "]");
 
@@ -199,6 +204,7 @@ public class GameManager {
 
         // Update the action-bar for everyone still in queue
         updateQueueActionBar(type, queue);
+        plugin.getQueueScoreboardManager().updateQueueScoreboard(type, mode);
 
         // If queue size dropped below minPlayers, cancel countdown
         int remaining = queue.size();
@@ -385,6 +391,8 @@ public class GameManager {
         }
         arena.setInUse(true);
 
+        plugin.getQueueScoreboardManager().clearQueueScoreboard(type, mode);
+
         // 2) Instantiate a GameInstance based on type + mode
         GameInstance instance;
         switch (type.toUpperCase()) {
@@ -474,7 +482,7 @@ public class GameManager {
      * Reads the maximum number of players for a given type from config.yml.
      * Path: minigames.<TYPE>.maxPlayers  (default = same as minPlayers if not specified)
      */
-    private int getMaxPlayers(String type) {
+    public int getMaxPlayers(String type) {
         int min = getMinPlayers(type);
         return plugin.getConfig().getInt("minigames." + type.toUpperCase() + ".maxPlayers", min);
     }
@@ -619,6 +627,14 @@ public int getQueuedCount(String gameType, GameMode mode) {
     String key = buildQueueKey(gameType, mode);
     Queue<QueueEntry> queue = queueMap.get(key);
     return (queue == null) ? 0 : queue.size();
+}
+
+/**
+ * Returns the internal Queue<QueueEntry> for a given key,
+ * or null if none exists.
+ */
+public Queue<QueueEntry> getQueue(String key) {
+    return queueMap.get(key);
 }
 
 }

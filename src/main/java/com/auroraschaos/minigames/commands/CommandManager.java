@@ -43,5 +43,11 @@ public class CommandManager {
             mguiCmd.setExecutor(guiExecutor);
             // No tab completion needed for /mgui
         }
+
+        PluginCommand partyCmd = plugin.getCommand("party");
+        if (partyCmd != null){
+            PartyCommand partyExecutor = new PartyCommand(plugin);
+            partyCmd.setExecutor(partyExecutor);
+        }
     }
 }
