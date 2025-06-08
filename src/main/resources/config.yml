@@ -43,5 +43,12 @@ minigames:
     enabled_modes:
       - CLASSIC
       - TEAM
+  
+  RACE:
+    display_name: '&eKart Racing'
+    icon: BOAT
+    lore:
+      - '&7Race your friends in high-speed karts!'
+  # optional: specify minPlayers, maxPlayers, enabled_modes if needed
 
   # ... add more minigames here ...

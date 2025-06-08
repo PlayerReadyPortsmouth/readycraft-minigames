@@ -399,6 +399,9 @@ public class GameManager {
             case "TNT_RUN":
                 instance = new TNTRunGame(type, mode, plugin, arena, players);
                 break;
+            case "RACE":
+                instance = new RaceGame(type, mode, plugin, arena, players);
+                break;
             // TODO: Add other minigame constructors here
             default:
                 plugin.getLogger().warning("No GameInstance class for type: " + type);
