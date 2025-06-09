@@ -3,6 +3,7 @@ package com.auroraschaos.minigames.game;
 import com.auroraschaos.minigames.MinigamesPlugin;
 import com.auroraschaos.minigames.arena.Arena;
 import com.auroraschaos.minigames.arena.ArenaManager;
+import com.auroraschaos.minigames.game.race.RaceGame;
 import com.auroraschaos.minigames.gui.GUIManager;
 import com.auroraschaos.minigames.party.PartyManager;
 import com.auroraschaos.minigames.stats.StatsManager;
@@ -18,6 +19,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.ChatColor;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -400,7 +402,13 @@ public class GameManager {
                 instance = new TNTRunGame(type, mode, plugin, arena, players);
                 break;
             case "RACE":
-                instance = new RaceGame(type, mode, plugin, arena, players);
+                try {
+                    instance = new RaceGame(type, mode, plugin, arena, players, null, null, type);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    return;
+                }
                 break;
             // TODO: Add other minigame constructors here
             default:

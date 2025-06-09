@@ -1,0 +1,8 @@
+display_name: "&aSpeedster"
+icon: SUGAR
+stats:
+  maxSpeed: 1.5
+  accelRate: 0.06
+  decelRate: 0.015
+  brakeRate: 0.08
+  turnRate: 4

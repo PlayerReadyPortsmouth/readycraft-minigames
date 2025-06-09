@@ -1,0 +1,15 @@
+display_name: "&7Default Kart"
+icon: MINECART
+stats:
+  maxSpeed: 1.2
+  accelRate: 0.05
+  decelRate: 0.01
+  brakeRate: 0.1
+  turnRate: 5       # degrees per tick
+  slopeStep: 1.0
+  climbSpeed: 0.3
+  dropSpeed: 0.2
+  gliderDuration: 6000
+  gliderFallMult: 0.2
+  wallStickTime: 1000
+  wallDropSpeed: 0.1

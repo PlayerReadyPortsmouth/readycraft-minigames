@@ -58,4 +58,9 @@ public class TrackConfig {
     public boolean contains(String path) {
         return config.contains(path);
     }
+
+    public KartConfig getDefaultKartConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDefaultKartConfig'");
+    }
 }

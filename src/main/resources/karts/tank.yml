@@ -1,0 +1,24 @@
+# Tank: slow but grips track tightly
+display_name: "&2Tank"
+icon: IRON_INGOT
+stats:
+  maxSpeed: 0.9
+  accelRate: 0.04
+  decelRate: 0.012
+  brakeRate: 0.1
+  turnRate: 3
+  slopeStep: 1.0
+  climbSpeed: 0.3
+  dropSpeed: 0.2
+  boostThreshold: 0.8
+  checkpointRadius: 2.0
+  totalLaps: 3
+particles:
+  boost:
+    type: CLOUD
+    count: 5
+    interval: 2
+  drift:
+    type: REDSTONE
+    count: 3
+    interval: 3
