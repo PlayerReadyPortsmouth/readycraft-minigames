@@ -62,14 +62,11 @@ jobs:
           asset_name: ${{ steps.find_jar.outputs.artifact_name }}
           asset_content_type: application/java-archive
 
-      # ───────────────────────────────────────────────────────────────────────
       # 7) Compute diff stats vs previous commit
       - name: Compute lines added/removed
         id: stats
         run: |
-          # Compare this commit vs its parent
           STATS=$(git diff --shortstat ${{ github.sha }}~1 ${{ github.sha }})
-          # Extract numbers with grep+sed
           ADD=$(echo "$STATS" | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+' || echo 0)
           DEL=$(echo "$STATS" | grep -oE '[0-9]+ deletion'  | grep -oE '[0-9]+' || echo 0)
           echo "additions=$ADD" >> $GITHUB_OUTPUT
@@ -77,29 +74,31 @@ jobs:
 
       # 8) Send Discord webhook
       - name: Notify Discord
-        if: always()   # only run after success; you can tighten this if you like
+        if: always()   # adjust to success/failure as needed
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          COMMIT_MSG: "${{ github.event.head_commit.message }}"
-          ADD: ${{ steps.stats.outputs.additions }}
-          DEL: ${{ steps.stats.outputs.deletions }}
-          REPO: ${{ github.repository }}
-          TAG: v${{ github.sha }}
         run: |
+          #–– Gather contexts
+          REPO="${{ github.repository }}"
+          SHA="${{ github.sha }}"
+          TAG="v${SHA}"
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          ADD="${{ steps.stats.outputs.additions }}"
+          DEL="${{ steps.stats.outputs.deletions }}"
           RELEASE_URL="https://github.com/${REPO}/releases/tag/${TAG}"
 
-          # Build the payload
-          read -r -d '' JSON <<EOF
+          #–– Build JSON payload without needing to escape quotes
+          cat <<EOF > payload.json
           {
             "embeds": [{
               "title": "New Release: ${TAG}",
               "description": "${COMMIT_MSG}",
+              "url": "${RELEASE_URL}",
+              "color": 5620992,
               "fields": [
                 { "name": "Lines Added",   "value": "${ADD}", "inline": true },
                 { "name": "Lines Removed", "value": "${DEL}", "inline": true }
-              ],
-              "url": "${RELEASE_URL}",
-              "color": 5620992
+              ]
             }],
             "components": [{
               "type": 1,
@@ -113,7 +112,7 @@ jobs:
           }
           EOF
 
-          # Fire the webhook
-          curl -H "Content-Type: application/json" \
-               -d "${JSON}" \
-               "${WEBHOOK_URL}"
+          #–– Fire the webhook
+          curl -X POST "$WEBHOOK_URL" \
+               -H "Content-Type: application/json" \
+               --data @payload.json
