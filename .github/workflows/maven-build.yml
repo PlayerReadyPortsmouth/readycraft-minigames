@@ -1,8 +1,7 @@
 name: Build, Release, and Archive Minigames Plugin JAR
 
-# Grant write permission so create-release can work
 permissions:
-  contents: write
+  contents: write   # for create-release
 
 on:
   push:
@@ -14,24 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Check out the repository
+      # 1) Check out full history so diffs work
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0    # <–– needed to diff against previous commit
 
-      # 2) Set up JDK 21 and enable Maven’s built-in cache
+      # 2) Set up JDK 21 & Maven cache
       - name: Set up JDK 21 & enable Maven cache
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
-          cache: 'maven'        # <-- automatically caches ~/.m2
+          cache: 'maven'
 
-      # 3) Build the plugin (compile against Java 21, run Shade/Javadoc, etc.)
+      # 3) Build
       - name: Build with Maven
         run: mvn --batch-mode clean package
 
-      # 4) Locate the built JAR (the shade plugin replaces the original artifact,
-      #    so there will be exactly one minigames-plugin-*.jar in target/)
+      # 4) Find the shaded JAR
       - name: Find built JAR
         id: find_jar
         run: |
@@ -39,7 +39,7 @@ jobs:
           echo "artifact_path=$JAR_PATH" >> $GITHUB_OUTPUT
           echo "artifact_name=$(basename "$JAR_PATH")" >> $GITHUB_OUTPUT
 
-      # 5) Create a GitHub Release tagged “v<commit-sha>” (cannot be exactly 40 hex chars)
+      # 5) Create GitHub Release
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -51,7 +51,7 @@ jobs:
           draft: false
           prerelease: false
 
-      # 6) Upload the located JAR as an asset under that Release
+      # 6) Upload JAR
       - name: Upload built JAR to Release
         uses: actions/upload-release-asset@v1
         env:
@@ -61,3 +61,59 @@ jobs:
           asset_path: ${{ steps.find_jar.outputs.artifact_path }}
           asset_name: ${{ steps.find_jar.outputs.artifact_name }}
           asset_content_type: application/java-archive
+
+      # ───────────────────────────────────────────────────────────────────────
+      # 7) Compute diff stats vs previous commit
+      - name: Compute lines added/removed
+        id: stats
+        run: |
+          # Compare this commit vs its parent
+          STATS=$(git diff --shortstat ${{ github.sha }}~1 ${{ github.sha }})
+          # Extract numbers with grep+sed
+          ADD=$(echo "$STATS" | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+' || echo 0)
+          DEL=$(echo "$STATS" | grep -oE '[0-9]+ deletion'  | grep -oE '[0-9]+' || echo 0)
+          echo "additions=$ADD" >> $GITHUB_OUTPUT
+          echo "deletions=$DEL" >> $GITHUB_OUTPUT
+
+      # 8) Send Discord webhook
+      - name: Notify Discord
+        if: always()   # only run after success; you can tighten this if you like
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          COMMIT_MSG: "${{ github.event.head_commit.message }}"
+          ADD: ${{ steps.stats.outputs.additions }}
+          DEL: ${{ steps.stats.outputs.deletions }}
+          REPO: ${{ github.repository }}
+          TAG: v${{ github.sha }}
+        run: |
+          RELEASE_URL="https://github.com/${REPO}/releases/tag/${TAG}"
+
+          # Build the payload
+          read -r -d '' JSON <<EOF
+          {
+            "embeds": [{
+              "title": "New Release: ${TAG}",
+              "description": "${COMMIT_MSG}",
+              "fields": [
+                { "name": "Lines Added",   "value": "${ADD}", "inline": true },
+                { "name": "Lines Removed", "value": "${DEL}", "inline": true }
+              ],
+              "url": "${RELEASE_URL}",
+              "color": 5620992
+            }],
+            "components": [{
+              "type": 1,
+              "components": [{
+                "type": 2,
+                "style": 5,
+                "label": "View Release",
+                "url": "${RELEASE_URL}"
+              }]
+            }]
+          }
+          EOF
+
+          # Fire the webhook
+          curl -H "Content-Type: application/json" \
+               -d "${JSON}" \
+               "${WEBHOOK_URL}"
