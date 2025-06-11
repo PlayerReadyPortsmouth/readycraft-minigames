@@ -3,6 +3,7 @@ package com.auroraschaos.minigames.game;
 import com.auroraschaos.minigames.MinigamesPlugin;
 import com.auroraschaos.minigames.arena.Arena;
 import com.auroraschaos.minigames.arena.ArenaManager;
+import com.auroraschaos.minigames.arena.ArenaService;
 import com.auroraschaos.minigames.game.race.RaceGame;
 import com.auroraschaos.minigames.gui.GUIManager;
 import com.auroraschaos.minigames.party.PartyManager;
@@ -44,7 +45,7 @@ import java.util.*;
 public class GameManager {
 
     private final MinigamesPlugin plugin;
-    private final ArenaManager arenaManager;
+    private final ArenaService arenaService;
     private final PartyManager partyManager;
     private final StatsManager statsManager;
     private final GUIManager guiManager;
@@ -66,12 +67,12 @@ public class GameManager {
     private static final int COUNTDOWN_SECONDS = 60;
 
     public GameManager(MinigamesPlugin plugin,
-                       ArenaManager arenaManager,
+                       ArenaService arenaService,
                        PartyManager partyManager,
                        StatsManager statsManager,
                        GUIManager guiManager) {
         this.plugin       = plugin;
-        this.arenaManager = arenaManager;
+        this.arenaService = arenaService;
         this.partyManager = partyManager;
         this.statsManager = statsManager;
         this.guiManager   = guiManager;
@@ -383,7 +384,7 @@ public class GameManager {
      */
     private void startNewGame(String type, GameMode mode, List<Player> players) {
         // 1) Spin up a dynamic Arena instance
-        Arena arena = arenaManager.createArenaInstance(type);
+        Arena arena = arenaService.createArenaInstance(type);
         if (arena == null) {
             plugin.getLogger().severe("Failed to create arena for minigame: " + type);
             for (Player p : players) {
@@ -437,7 +438,7 @@ public class GameManager {
 
         // 2) Reset the schematic in the arena (wipes any player modifications)
         Arena arena = instance.getArena();
-        arenaManager.resetArena(arena);
+        arenaService.resetArena(arena);
         arena.setInUse(false);
 
         // 3) Update stats via StatsManager

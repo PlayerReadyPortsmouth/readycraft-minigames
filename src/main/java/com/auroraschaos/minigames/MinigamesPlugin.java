@@ -6,9 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
-import com.auroraschaos.minigames.arena.ArenaManager;
+import com.auroraschaos.minigames.arena.ArenaRegistry;
+import com.auroraschaos.minigames.arena.ArenaResetService;
+import com.auroraschaos.minigames.arena.ArenaService;
+import com.auroraschaos.minigames.arena.GridSlotAllocator;
+import com.auroraschaos.minigames.arena.SchematicLoader;
 import com.auroraschaos.minigames.commands.CommandManager;
+import com.auroraschaos.minigames.config.ConfigManager;
+import com.auroraschaos.minigames.config.ConfigurationException;
 import com.auroraschaos.minigames.game.GameManager;
 import com.auroraschaos.minigames.game.GameMode;
 import com.auroraschaos.minigames.gui.GUIManager;
@@ -18,6 +25,8 @@ import com.auroraschaos.minigames.scoreboard.QueueScoreboardManager;
 import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
 import com.auroraschaos.minigames.stats.StatsManager;
 import com.auroraschaos.minigames.util.CountdownTimer;
+import com.auroraschaos.minigames.arena.SlotAllocator;
+import com.auroraschaos.minigames.arena.WorldEditSchematicLoader;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -32,7 +41,7 @@ public class MinigamesPlugin extends JavaPlugin {
     private static MinigamesPlugin instance;
 
     private GameManager gameManager;
-    private ArenaManager arenaManager;
+    private ArenaService arenaService;
     private PartyManager partyManager;
     private StatsManager statsManager;
     private GUIManager guiManager;
@@ -40,6 +49,8 @@ public class MinigamesPlugin extends JavaPlugin {
     private ScoreboardManager scoreboardManager;
     private CountdownTimer countdownTimer;
     private QueueScoreboardManager queueSB;
+
+    private ConfigManager configManager;
 
     /**
      * Called when the plugin is enabled.
@@ -80,20 +91,46 @@ public class MinigamesPlugin extends JavaPlugin {
         getLogger().info("MinigamesPlugin has been disabled!");
     }
 
-    private void initializeManagers(){
-        /**
-         * Initializes all the core managers used by the plugin.
-         */
-        arenaManager = new ArenaManager(this);
-        partyManager = new PartyManager(this);
-        statsManager = new StatsManager(this);
-        guiManager = new GUIManager(this);
-        cmdManager = new CommandManager(this);
+    private void initializeManagers() {
+        // 1) Load & validate all configs
+        configManager = new ConfigManager(this);
+        try {
+            configManager.loadAll();
+            getLogger().info("[Config] All configurations loaded.");
+        } catch (ConfigurationException ex) {
+            getLogger().severe("[Config] Failed to load config: " + ex.getMessage());
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+    
+        // 2) Prepare the arena dependencies
+        ArenaRegistry arenaRegistry = new ArenaRegistry();
+        ArenaResetService arenaResetService = new ArenaResetService(this, arenaRegistry);
+        SlotAllocator slotAllocator = new GridSlotAllocator(new Vector(0, 64, 0), /*columns*/5, /*spacingX*/300, /*spacingZ*/300);
+        SchematicLoader schematicLoader = new WorldEditSchematicLoader(this);
+    
+        // 3) Construct the ArenaService with everything it needs
+        arenaService = new ArenaService(
+            this,
+            configManager.getArenaConfig(),
+            slotAllocator,
+            schematicLoader,
+            arenaResetService
+        );
+        getLogger().info("[Init] ArenaService constructed.");
+    
+        // 4) Other managers
+        partyManager      = new PartyManager(this);
+        statsManager      = new StatsManager(this);
+        guiManager        = new GUIManager(this);
+        cmdManager        = new CommandManager(this);
         scoreboardManager = new ScoreboardManager();
-        countdownTimer = new CountdownTimer(this, scoreboardManager);
+        countdownTimer    = new CountdownTimer(this, scoreboardManager);
+    
+        // 5) Game & queue
         gameManager = new GameManager(
             this,
-            arenaManager,
+            arenaService,
             partyManager,
             statsManager,
             guiManager
@@ -173,8 +210,8 @@ public class MinigamesPlugin extends JavaPlugin {
      * Gets the ArenaManager responsible for managing arena schematics and instances.
      * @return The ArenaManager instance.
      */
-    public ArenaManager getArenaManager() {
-        return arenaManager;
+    public ArenaService getArenaManager() {
+        return arenaService;
     }
 
     /**
