@@ -1,161 +1,170 @@
 package com.auroraschaos.minigames.stats;
 
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.config.StatsConfig;
+import com.auroraschaos.minigames.game.GameInstance;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import com.auroraschaos.minigames.MinigamesPlugin;
-import com.auroraschaos.minigames.game.GameInstance;
-
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 /**
- * Manages persistent storage of minigame statistics (wins, losses, plays) per player
- * and integrates basic PlaceholderAPI placeholders.
+ * Manages persistent storage of minigame statistics (wins, losses, plays) per player.
+ * Supports both flatfile (YAML) and MySQL backends as configured via StatsConfig.
  */
-public class StatsManager /* implements PlaceholderExpansion (if you wish to register placeholders) */ {
+public class StatsManager {
 
     private final MinigamesPlugin plugin;
-    private final File statsFile;
-    private final FileConfiguration statsConfig;
+    private final StatsConfig statsConfig;
 
-    /**
-     * Constructs a new StatsManager.
-     * Loads (or creates) stats.yml in the plugin's data folder.
-     *
-     * @param plugin The main MinigamesPlugin instance.
-     */
-    public StatsManager(MinigamesPlugin plugin) {
+    // Flatfile storage
+    private File statsFile;
+    private FileConfiguration statsStorage;
+
+    // MySQL storage (stubbed—replace with your preferred DataSource)
+    // private DataSource mysqlDataSource;
+
+    public StatsManager(MinigamesPlugin plugin, StatsConfig statsConfig) {
         this.plugin = plugin;
+        this.statsConfig = statsConfig;
 
         // Ensure plugin data folder exists
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
         }
 
-        // Initialize stats.yml
-        statsFile = new File(plugin.getDataFolder(), "stats.yml");
-        if (!statsFile.exists()) {
-            try {
-                statsFile.createNewFile();
-            } catch (IOException e) {
-                plugin.getLogger().severe("Could not create stats.yml: " + e.getMessage());
-            }
+        switch (statsConfig.getStorageType()) {
+            case FLATFILE:
+                initFlatfileStorage();
+                scheduleAutoSave();
+                break;
+            case MYSQL:
+                initMySqlStorage();
+                break;
         }
-
-        statsConfig = YamlConfiguration.loadConfiguration(statsFile);
     }
 
-    /**
-     * Save the in-memory statsConfig back to stats.yml.
-     */
-    private void saveStatsFile() {
+    // -------------------
+    // Initialization
+    // -------------------
+
+    private void initFlatfileStorage() {
+        // Use the configured subfolder for stats
+        File dir = new File(plugin.getDataFolder(), statsConfig.getFlatfileFolder());
+        if (!dir.exists()) dir.mkdirs();
+
+        statsFile = new File(dir, "stats.yml");
         try {
-            statsConfig.save(statsFile);
+            if (!statsFile.exists()) statsFile.createNewFile();
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to save stats.yml: " + e.getMessage());
+            plugin.getLogger().log(Level.SEVERE,
+                "Could not create stats file: " + statsFile.getAbsolutePath(), e);
         }
+
+        statsStorage = YamlConfiguration.loadConfiguration(statsFile);
+        plugin.getLogger().info("[StatsManager] Flatfile storage initialized at " + statsFile);
     }
 
-    /**
-     * Records the result of a completed game instance.
-     * This default implementation:
-     *   • If exactly one participant remains in the instance's participant list, that is the winner.
-     *   • All others (either eliminated before or still in the list if size>1) count as losses.
-     *
-     * If your GameInstance already calls recordWin/recordLoss during the match,
-     * you can override or leave this as a no-op.
-     *
-     * @param instance The {@link GameInstance} that has just finished.
-     */
+    private void initMySqlStorage() {
+        // TODO: initialize your JDBC DataSource here, e.g. HikariCP with statsConfig.getMysqlConfig()
+        // StatsConfig.MySQLConfig cfg = statsConfig.getMysqlConfig();
+        // String url = "jdbc:mysql://" + cfg.getHost() + ":" + cfg.getPort() + "/" + cfg.getDatabase();
+        // ... set up DataSource ...
+        plugin.getLogger().info("[StatsManager] MySQL storage selected, initialization pending.");
+    }
+
+    private void scheduleAutoSave() {
+        long intervalTicks = statsConfig.getAutoSaveIntervalSeconds() * 20L;
+        plugin.getServer().getScheduler().runTaskTimerAsynchronously(
+            plugin,
+            this::saveFlatfile,
+            intervalTicks,
+            intervalTicks
+        );
+        plugin.getLogger().info("[StatsManager] Scheduled auto-save every "
+            + statsConfig.getAutoSaveIntervalSeconds() + " seconds.");
+    }
+
+    // -------------------
+    // Public API
+    // -------------------
+
     public void recordGameResult(GameInstance instance) {
-        // Attempt to identify winner if exactly one remains
+        // Default logic: last survivor is winner
         if (instance.getParticipants().size() == 1) {
-            Player winner = instance.getParticipants().get(0);
-            recordWin(winner.getUniqueId(), instance.getType());
-            plugin.getLogger().info("Recorded WIN for " + winner.getName() + " in " + instance.getType());
+            UUID winnerId = instance.getParticipants().get(0).getUniqueId();
+            recordWin(winnerId, instance.getType());
         }
-
-        // Every player who participated but is not the sole survivor (or eliminated earlier),
-        // count them as a loss. This assumes GameInstance removed eliminated players from participants.
-        // If your GameInstance keeps all participants in the list, you may need custom logic.
+        // Everyone else is a loser
         for (Player p : instance.getParticipants()) {
-            // If more than one left, count them as loss
-            if (instance.getParticipants().size() != 1) {
-                recordLoss(p.getUniqueId(), instance.getType());
-                plugin.getLogger().info("Recorded LOSS for " + p.getName() + " in " + instance.getType());
-            }
+            recordLoss(p.getUniqueId(), instance.getType());
         }
     }
 
-    /**
-     * Increments the win count for a given player and minigame type.
-     *
-     * Data stored as:
-     *   stats:
-     *     <uuid>:
-     *       <gameType>:
-     *         wins: <int>
-     *         losses: <int>
-     */
     public void recordWin(UUID playerUUID, String gameType) {
-        String path = "stats." + playerUUID + "." + gameType + ".wins";
-        int current = statsConfig.getInt(path, 0);
-        statsConfig.set(path, current + 1);
-        saveStatsFile();
+        if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
+            String path = "stats." + playerUUID + "." + gameType + ".wins";
+            int current = statsStorage.getInt(path, 0);
+            statsStorage.set(path, current + 1);
+            saveFlatfile();
+        } else {
+            // TODO: implement SQL increment for wins
+            plugin.getLogger().info("[StatsManager] (MySQL) recordWin for " + playerUUID + " in " + gameType);
+        }
     }
 
-    /**
-     * Increments the loss count for a given player and minigame type.
-     *
-     * Data stored as:
-     *   stats:
-     *     <uuid>:
-     *       <gameType>:
-     *         wins: <int>
-     *         losses: <int>
-     */
     public void recordLoss(UUID playerUUID, String gameType) {
-        String path = "stats." + playerUUID + "." + gameType + ".losses";
-        int current = statsConfig.getInt(path, 0);
-        statsConfig.set(path, current + 1);
-        saveStatsFile();
+        if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
+            String path = "stats." + playerUUID + "." + gameType + ".losses";
+            int current = statsStorage.getInt(path, 0);
+            statsStorage.set(path, current + 1);
+            saveFlatfile();
+        } else {
+            // TODO: implement SQL increment for losses
+            plugin.getLogger().info("[StatsManager] (MySQL) recordLoss for " + playerUUID + " in " + gameType);
+        }
     }
 
-    /**
-     * Retrieves how many wins a player has for a specific minigame type.
-     *
-     * @param playerUUID UUID of the player.
-     * @param gameType   The minigame type (e.g., "TNT_RUN").
-     * @return number of wins (0 if none recorded).
-     */
     public int getWins(UUID playerUUID, String gameType) {
-        String path = "stats." + playerUUID + "." + gameType + ".wins";
-        return statsConfig.getInt(path, 0);
+        if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
+            String path = "stats." + playerUUID + "." + gameType + ".wins";
+            return statsStorage.getInt(path, 0);
+        } else {
+            // TODO: query SQL
+            return 0;
+        }
     }
 
-    /**
-     * Retrieves how many losses a player has for a specific minigame type.
-     *
-     * @param playerUUID UUID of the player.
-     * @param gameType   The minigame type (e.g., "TNT_RUN").
-     * @return number of losses (0 if none recorded).
-     */
     public int getLosses(UUID playerUUID, String gameType) {
-        String path = "stats." + playerUUID + "." + gameType + ".losses";
-        return statsConfig.getInt(path, 0);
+        if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
+            String path = "stats." + playerUUID + "." + gameType + ".losses";
+            return statsStorage.getInt(path, 0);
+        } else {
+            // TODO: query SQL
+            return 0;
+        }
     }
 
-    /**
-     * Retrieves total plays (wins + losses) for a player in a given minigame type.
-     *
-     * @param playerUUID UUID of the player.
-     * @param gameType   The minigame type.
-     * @return total plays (0 if none).
-     */
     public int getTotalPlays(UUID playerUUID, String gameType) {
         return getWins(playerUUID, gameType) + getLosses(playerUUID, gameType);
+    }
+
+    // -------------------
+    // Helpers
+    // -------------------
+
+    private void saveFlatfile() {
+        try {
+            statsStorage.save(statsFile);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE,
+                "[StatsManager] Error saving stats file: " + statsFile.getAbsolutePath(), e);
+        }
     }
 }

@@ -120,8 +120,8 @@ public class MinigamesPlugin extends JavaPlugin {
         getLogger().info("[Init] ArenaService constructed.");
     
         // 4) Other managers
-        partyManager      = new PartyManager(this);
-        statsManager      = new StatsManager(this);
+        partyManager      = new PartyManager(this, configManager.getPartyConfig());
+        statsManager      = new StatsManager(this, configManager.getStatsConfig());
         guiManager        = new GUIManager(this);
         cmdManager        = new CommandManager(this);
         scoreboardManager = new ScoreboardManager();

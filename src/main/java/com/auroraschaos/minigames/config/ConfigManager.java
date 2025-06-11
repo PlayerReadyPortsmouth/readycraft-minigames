@@ -12,9 +12,9 @@ public class ConfigManager {
     private final FileConfiguration config;
 
     private ArenaConfig arenaConfig;
-    //private GameModeConfig gameModeConfig;
-    //private PartyConfig partyConfig;
-    //private StatsConfig statsConfig;
+    private GameModeConfig gameModeConfig;
+    private PartyConfig partyConfig;
+    private StatsConfig statsConfig;
     //private GuiConfig guiConfig;
     //private ScoreboardConfig scoreboardConfig;
     //private CountdownConfig countdownConfig;
@@ -37,9 +37,9 @@ public class ConfigManager {
         }
         // Parse each section
         arenaConfig       = parseArenaConfig();
-        //gameModeConfig    = parseGameModeConfig();
-        //partyConfig       = parsePartyConfig();
-        //statsConfig       = parseStatsConfig();
+        gameModeConfig    = parseGameModeConfig();
+        partyConfig       = parsePartyConfig();
+        statsConfig       = parseStatsConfig();
         //guiConfig         = parseGuiConfig();
         //scoreboardConfig  = parseScoreboardConfig();
         //countdownConfig   = parseCountdownConfig();
@@ -54,13 +54,10 @@ public class ConfigManager {
         }
         return ArenaConfig.from(config.getConfigurationSection(path));
     }
-    /** 
+    
     private GameModeConfig parseGameModeConfig() throws ConfigurationException {
-        final String path = "gamemodes";
-        if (!config.isConfigurationSection(path)) {
-            throw new ConfigurationException("Missing '" + path + "' section in config.yml");
-        }
-        return GameModeConfig.from(config.getConfigurationSection(path));
+        GameModeConfig gameModeConfig = GameModeConfig.from(config.getConfigurationSection("minigames"));
+        return gameModeConfig;
     }
 
     private PartyConfig parsePartyConfig() throws ConfigurationException {
@@ -70,7 +67,7 @@ public class ConfigManager {
         }
         return PartyConfig.from(config.getConfigurationSection(path));
     }
-
+ 
     private StatsConfig parseStatsConfig() throws ConfigurationException {
         final String path = "stats";
         if (!config.isConfigurationSection(path)) {
@@ -78,7 +75,7 @@ public class ConfigManager {
         }
         return StatsConfig.from(config.getConfigurationSection(path));
     }
-
+/**
     private GuiConfig parseGuiConfig() throws ConfigurationException {
         final String path = "gui";
         if (!config.isConfigurationSection(path)) {
@@ -114,9 +111,9 @@ public class ConfigManager {
 
     // Getters for sub-configs
     public ArenaConfig getArenaConfig() { return arenaConfig; }
-    //public GameModeConfig getGameModeConfig() { return gameModeConfig; }
-    //public PartyConfig getPartyConfig() { return partyConfig; }
-    //public StatsConfig getStatsConfig() { return statsConfig; }
+    public GameModeConfig getGameModeConfig() { return gameModeConfig; }
+    public PartyConfig getPartyConfig() { return partyConfig; }
+    public StatsConfig getStatsConfig() { return statsConfig; }
     //public GuiConfig getGuiConfig() { return guiConfig; }
     //public ScoreboardConfig getScoreboardConfig() { return scoreboardConfig; }
     //public CountdownConfig getCountdownConfig() { return countdownConfig; }

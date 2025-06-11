@@ -1,6 +1,8 @@
 package com.auroraschaos.minigames.party;
 
 import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.config.PartyConfig;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -22,6 +24,7 @@ public class PartyManager {
 
     private final MinigamesPlugin plugin;
     private final Scoreboard mainScoreboard;
+    private final PartyConfig partyConfig;
 
     /** Map from party ID → Party object */
     private final Map<UUID, Party> parties = new HashMap<>();
@@ -36,8 +39,9 @@ public class PartyManager {
     ));
     private int nextColorIndex = 0;
 
-    public PartyManager(MinigamesPlugin plugin) {
+    public PartyManager(MinigamesPlugin plugin, PartyConfig partyConfig) {
         this.plugin = plugin;
+        this.partyConfig = partyConfig;
         // Use the server’s main scoreboard (so name‐coloring updates everywhere)
         this.mainScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
     }
