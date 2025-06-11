@@ -2,7 +2,6 @@ package com.auroraschaos.minigames.game;
 
 import com.auroraschaos.minigames.MinigamesPlugin;
 import com.auroraschaos.minigames.arena.Arena;
-import com.auroraschaos.minigames.arena.ArenaManager;
 import com.auroraschaos.minigames.arena.ArenaService;
 import com.auroraschaos.minigames.game.race.RaceGame;
 import com.auroraschaos.minigames.gui.GUIManager;
