@@ -127,7 +127,7 @@ jobs:
       - name: Copy plugin JAR into plugins folder
         run: |
           mkdir -p server/plugins
-          cp "${{ needs.build.outputs.jar-path }}" server/plugins/
+          cp target/minigames-plugin-*.jar server/plugins/
 
       - name: Start Paper server and check plugin load
         run: |
