@@ -15,7 +15,9 @@ import java.util.Map;
 public class ArenaService {
     private final MinigamesPlugin plugin;
     private final ArenaDefinitionRepository definitionRepo;
+    @SuppressWarnings("unused")
     private final SlotAllocator slotAllocator;
+    @SuppressWarnings("unused")
     private final SchematicLoader schematicLoader;
     private final ArenaFactory arenaFactory;
     private final ArenaRegistry registry;
