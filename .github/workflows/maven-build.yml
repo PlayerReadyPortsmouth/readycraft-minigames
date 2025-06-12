@@ -2,9 +2,11 @@ name: Build, Release, Test, and Archive Minigames Plugin JAR
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
+  # Build and publish release
   build:
     runs-on: ubuntu-latest
     outputs:
@@ -12,7 +14,7 @@ jobs:
       jar-name: ${{ steps.find_jar.outputs.artifact_name }}
 
     steps:
-      - name: Check out code
+      - name: Check out repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -32,14 +34,19 @@ jobs:
         run: |
           JAR_PATH=$(ls target/minigames-plugin-*.jar | head -n1)
           echo "artifact_path=$JAR_PATH" >> $GITHUB_OUTPUT
-          echo "artifact_name=$(basename "$JAR_PATH")" >> $GITHUB_OUTPUT
+          echo "artifact_name=$(basename \"$JAR_PATH\")" >> $GITHUB_OUTPUT
+
+      - name: Upload plugin JAR for downstream jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-jar
+          path: ${{ steps.find_jar.outputs.artifact_path }}
 
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: v${{ github.sha }}
           release_name: Release v${{ github.sha }}
           draft: false
@@ -47,15 +54,14 @@ jobs:
 
       - name: Upload built JAR to Release
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ steps.find_jar.outputs.artifact_path }}
           asset_name: ${{ steps.find_jar.outputs.artifact_name }}
           asset_content_type: application/java-archive
 
-      - name: Compute lines added/removed
+      - name: Compute diff stats
         id: stats
         run: |
           STATS=$(git diff --shortstat ${{ github.sha }}~1 ${{ github.sha }})
@@ -105,17 +111,20 @@ jobs:
                -H "Content-Type: application/json" \
                --data @payload.json
 
+  # Test plugin on a Paper server
   test-paper:
+    name: Test plugin on Paper server
     needs: build
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out code
+      - name: Check out repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
-      - name: Download plugin JAR
-        uses: actions/download-artifact@v3
+      - name: Download plugin JAR artifact
+        uses: actions/download-artifact@v4
         with:
           name: plugin-jar
 
@@ -126,22 +135,19 @@ jobs:
             -o server/paper.jar
           echo "eula=true" > server/eula.txt
           mkdir -p server/plugins
-
-      - name: Copy plugin into server/plugins
-        run: |
-          # the download-artifact step drops your JAR under ./target/…
+          # copy the downloaded JAR (preserves wildcard from artifact)
           cp target/minigames-plugin-*.jar server/plugins/
 
-      - name: Start Paper & verify plugin
+      - name: Launch and verify plugin
         run: |
           cd server
           java -jar paper.jar nogui > server.log 2>&1 &
           PID=$!
           sleep 30
           if grep -q "Enabling MinigamesPlugin" server.log; then
-            echo "✅ Plugin loaded"
+            echo "✅ Plugin loaded successfully"
           else
-            echo "❌ Plugin failed to load" && cat server.log
+            echo "❌ Plugin did NOT load; logs:" && cat server.log
             exit 1
           fi
           kill $PID
