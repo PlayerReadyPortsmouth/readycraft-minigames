@@ -42,7 +42,7 @@ minigames:
       - "§7Last man standing wins!"
     enabled_modes:
       - CLASSIC
-      - TEAM
+      - TEAMS
   
   RACE:
     display_name: '&eKart Racing'
@@ -53,6 +53,37 @@ minigames:
     maxPlayers: 16
     enabled_modes:
       - CLASSIC
-      - MIRROR
 
   # ... add more minigames here ...
+arenas:
+  tnt_run:
+    schematic: "tnt_run.schem"
+    flags:
+      BLOCK_BREAK: DENY
+      BLOCK_PLACE: DENY
+      PVP: ALLOW
+  bed_wars:
+    schematic: "bed_wars.schem"
+    flags:
+      BLOCK_BREAK: DENY
+      BLOCK_PLACE: DENY
+      PVP: ALLOW
+
+party:
+  maxSize: 4                    # must be ≥ 1
+  inviteTimeoutSeconds: 30      # must be ≥ 1
+  allowCrossWorld: true         # whether invites work across worlds
+
+stats:
+  storage: flatfile             # or "mysql"
+  flatfileFolder: "player-stats"  # if using flatfile
+  # mysql:                       # only required if storage: mysql
+  #   host: "localhost"
+  #   port: 3306
+  #   database: "minigames"
+  #   user: "root"
+  #   password: ""
+  leaderboard:
+    enabled: true
+    size: 10
+  autoSaveIntervalSeconds: 60
