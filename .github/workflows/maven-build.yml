@@ -1,5 +1,8 @@
 name: Build, Release, Test, and Archive Minigames Plugin JAR
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
@@ -45,8 +48,9 @@ jobs:
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: v${{ github.sha }}
           release_name: Release v${{ github.sha }}
           draft: false
@@ -54,8 +58,9 @@ jobs:
 
       - name: Upload built JAR to Release
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ steps.find_jar.outputs.artifact_path }}
           asset_name: ${{ steps.find_jar.outputs.artifact_name }}
@@ -135,7 +140,6 @@ jobs:
             -o server/paper.jar
           echo "eula=true" > server/eula.txt
           mkdir -p server/plugins
-          # copy the downloaded JAR (preserves wildcard from artifact)
           cp target/minigames-plugin-*.jar server/plugins/
 
       - name: Launch and verify plugin
