@@ -1,37 +1,32 @@
-name: Build, Release, and Archive Minigames Plugin JAR
-
-permissions:
-  contents: write   # for create-release
+name: Build, Release, Test, and Archive Minigames Plugin JAR
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      jar-path: ${{ steps.find_jar.outputs.artifact_path }}
+      jar-name: ${{ steps.find_jar.outputs.artifact_name }}
 
     steps:
-      # 1) Check out full history so diffs work
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0    # <–– needed to diff against previous commit
+          fetch-depth: 0
 
-      # 2) Set up JDK 21 & Maven cache
       - name: Set up JDK 21 & enable Maven cache
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '21'
-          cache: 'maven'
+          cache: maven
 
-      # 3) Build
       - name: Build with Maven
         run: mvn --batch-mode clean package
 
-      # 4) Find the shaded JAR
       - name: Find built JAR
         id: find_jar
         run: |
@@ -39,7 +34,6 @@ jobs:
           echo "artifact_path=$JAR_PATH" >> $GITHUB_OUTPUT
           echo "artifact_name=$(basename "$JAR_PATH")" >> $GITHUB_OUTPUT
 
-      # 5) Create GitHub Release
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -51,7 +45,6 @@ jobs:
           draft: false
           prerelease: false
 
-      # 6) Upload JAR
       - name: Upload built JAR to Release
         uses: actions/upload-release-asset@v1
         env:
@@ -62,7 +55,6 @@ jobs:
           asset_name: ${{ steps.find_jar.outputs.artifact_name }}
           asset_content_type: application/java-archive
 
-      # 7) Compute diff stats vs previous commit
       - name: Compute lines added/removed
         id: stats
         run: |
@@ -72,13 +64,11 @@ jobs:
           echo "additions=$ADD" >> $GITHUB_OUTPUT
           echo "deletions=$DEL" >> $GITHUB_OUTPUT
 
-      # 8) Send Discord webhook
       - name: Notify Discord
-        if: always()   # adjust to success/failure as needed
+        if: always()
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          #–– Gather contexts
           REPO="${{ github.repository }}"
           SHA="${{ github.sha }}"
           TAG="v${SHA}"
@@ -87,7 +77,6 @@ jobs:
           DEL="${{ steps.stats.outputs.deletions }}"
           RELEASE_URL="https://github.com/${REPO}/releases/tag/${TAG}"
 
-          #–– Build JSON payload without needing to escape quotes
           cat <<EOF > payload.json
           {
             "embeds": [{
@@ -112,7 +101,47 @@ jobs:
           }
           EOF
 
-          #–– Fire the webhook
           curl -X POST "$WEBHOOK_URL" \
                -H "Content-Type: application/json" \
                --data @payload.json
+
+  test-paper:
+    name: Test plugin on Paper server
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Download latest Paper 1.20.1 (or your target version)
+        run: |
+          mkdir server
+          curl -sSL "https://papermc.io/api/v2/projects/paper/versions/1.20.1/builds/latest/downloads/paper-1.20.1.jar" \
+            -o server/paper.jar
+
+      - name: Accept EULA
+        run: echo "eula=true" > server/eula.txt
+
+      - name: Copy plugin JAR into plugins folder
+        run: |
+          mkdir -p server/plugins
+          cp "${{ needs.build.outputs.jar-path }}" server/plugins/
+
+      - name: Start Paper server and check plugin load
+        run: |
+          cd server
+          # Launch headless
+          java -jar paper.jar nogui > server.log 2>&1 &
+          PID=$!
+          # Give Paper time to initialize
+          sleep 30
+          # Look for your plugin’s “Enabled” log message
+          if grep -q "Enabling MinigamesPlugin" server.log; then
+            echo "✅ Plugin loaded successfully"
+          else
+            echo "❌ Plugin did NOT load; dumping server.log below" && cat server.log
+            exit 1
+          fi
+          kill $PID
