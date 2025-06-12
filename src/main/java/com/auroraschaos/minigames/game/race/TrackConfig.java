@@ -60,7 +60,6 @@ public class TrackConfig {
     }
 
     public KartConfig getDefaultKartConfig() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getDefaultKartConfig'");
     }
 }

@@ -49,6 +49,10 @@ minigames:
     icon: BOAT
     lore:
       - '&7Race your friends in high-speed karts!'
-  # optional: specify minPlayers, maxPlayers, enabled_modes if needed
+    minPlayers: 2
+    maxPlayers: 16
+    enabled_modes:
+      - CLASSIC
+      - MIRROR
 
   # ... add more minigames here ...
