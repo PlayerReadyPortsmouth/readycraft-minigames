@@ -116,31 +116,28 @@ jobs:
                -H "Content-Type: application/json" \
                --data @payload.json
 
-  # Test plugin on a Paper server
+  # Test plugin on a Paper server using only the artifact
   test-paper:
     name: Test plugin on Paper server
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
+      - name: Prepare server directories
+        run: |
+          mkdir -p server/plugins
 
-      - name: Download plugin JAR artifact
+      - name: Download plugin JAR artifact into plugins folder
         uses: actions/download-artifact@v4
         with:
           name: plugin-jar
+          path: server/plugins
 
-      - name: Set up Paper server
+      - name: Download Paper server
         run: |
-          mkdir server
           curl -sSL "https://papermc.io/api/v2/projects/paper/versions/1.20.1/builds/latest/downloads/paper-1.20.1.jar" \
             -o server/paper.jar
           echo "eula=true" > server/eula.txt
-          mkdir -p server/plugins
-          cp target/minigames-plugin-*.jar server/plugins/
 
       - name: Launch and verify plugin
         run: |
