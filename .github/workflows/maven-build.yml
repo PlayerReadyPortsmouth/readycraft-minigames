@@ -106,7 +106,6 @@ jobs:
                --data @payload.json
 
   test-paper:
-    name: Test plugin on Paper server
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -115,33 +114,34 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Download latest Paper 1.20.1 (or your target version)
+      - name: Download plugin JAR
+        uses: actions/download-artifact@v3
+        with:
+          name: plugin-jar
+
+      - name: Set up Paper server
         run: |
           mkdir server
           curl -sSL "https://papermc.io/api/v2/projects/paper/versions/1.20.1/builds/latest/downloads/paper-1.20.1.jar" \
             -o server/paper.jar
-
-      - name: Accept EULA
-        run: echo "eula=true" > server/eula.txt
-
-      - name: Copy plugin JAR into plugins folder
-        run: |
+          echo "eula=true" > server/eula.txt
           mkdir -p server/plugins
+
+      - name: Copy plugin into server/plugins
+        run: |
+          # the download-artifact step drops your JAR under ./target/…
           cp target/minigames-plugin-*.jar server/plugins/
 
-      - name: Start Paper server and check plugin load
+      - name: Start Paper & verify plugin
         run: |
           cd server
-          # Launch headless
           java -jar paper.jar nogui > server.log 2>&1 &
           PID=$!
-          # Give Paper time to initialize
           sleep 30
-          # Look for your plugin’s “Enabled” log message
           if grep -q "Enabling MinigamesPlugin" server.log; then
-            echo "✅ Plugin loaded successfully"
+            echo "✅ Plugin loaded"
           else
-            echo "❌ Plugin did NOT load; dumping server.log below" && cat server.log
+            echo "❌ Plugin failed to load" && cat server.log
             exit 1
           fi
           kill $PID
