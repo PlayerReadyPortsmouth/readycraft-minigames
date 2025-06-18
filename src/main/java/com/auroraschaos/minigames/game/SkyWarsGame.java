@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.logging.Level;
 
 /**
  * SkyWarsGame: a full implementation of a SkyWars minigame.
@@ -336,8 +337,7 @@ public class SkyWarsGame extends GameInstance implements Listener {
                 }
             }
         } catch (Exception ex) {
-            plugin.getLogger().severe("Unexpected error while pasting schematic: " + ex.getMessage());
-            ex.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Unexpected error while pasting schematic", ex);
         }
     }
 
