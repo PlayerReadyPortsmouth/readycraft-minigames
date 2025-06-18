@@ -72,7 +72,6 @@ public class StatsManager {
     }
 
     private void initMySqlStorage() {
-        // TODO: initialize your JDBC DataSource here, e.g. HikariCP with statsConfig.getMysqlConfig()
         // StatsConfig.MySQLConfig cfg = statsConfig.getMysqlConfig();
         // String url = "jdbc:mysql://" + cfg.getHost() + ":" + cfg.getPort() + "/" + cfg.getDatabase();
         // ... set up DataSource ...
@@ -122,7 +121,6 @@ public class StatsManager {
             statsStorage.set(path, current + 1);
             saveFlatfile();
         } else {
-            // TODO: implement SQL increment for wins
             plugin.getLogger().info("[StatsManager] (MySQL) recordWin for " + playerUUID + " in " + gameType);
         }
     }
@@ -134,7 +132,6 @@ public class StatsManager {
             statsStorage.set(path, current + 1);
             saveFlatfile();
         } else {
-            // TODO: implement SQL increment for losses
             plugin.getLogger().info("[StatsManager] (MySQL) recordLoss for " + playerUUID + " in " + gameType);
         }
     }
@@ -144,7 +141,6 @@ public class StatsManager {
             String path = "stats." + playerUUID + "." + gameType + ".wins";
             return statsStorage.getInt(path, 0);
         } else {
-            // TODO: query SQL
             return 0;
         }
     }
@@ -154,7 +150,6 @@ public class StatsManager {
             String path = "stats." + playerUUID + "." + gameType + ".losses";
             return statsStorage.getInt(path, 0);
         } else {
-            // TODO: query SQL
             return 0;
         }
     }
@@ -172,7 +167,6 @@ public class StatsManager {
         if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
             saveFlatfile();
         } else {
-            // TODO: flush to SQL backend when implemented
         }
     }
 

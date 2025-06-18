@@ -21,6 +21,7 @@ import org.bukkit.ChatColor;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * GameManager is responsible for:
@@ -405,12 +406,10 @@ public class GameManager {
                 try {
                     instance = new RaceGame(type, mode, plugin, arena, players, null, null, type);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    plugin.getLogger().log(Level.SEVERE, "Failed to create RaceGame instance", e);
                     return;
                 }
                 break;
-            // TODO: Add other minigame constructors here
             default:
                 plugin.getLogger().warning("No GameInstance class for type: " + type);
                 arena.setInUse(false);

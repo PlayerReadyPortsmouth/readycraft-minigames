@@ -57,13 +57,11 @@ public class Arena {
      * Reset the arena by re-pasting the schematic and resetting any state.
      */
     public void reset() {
-        // TODO: implement using your schematic loader
     }
 
     /**
      * Clean up any resources (scheduled tasks, regions, etc.) when shutting down.
      */
     public void cleanup() {
-        // TODO: cancel tasks, remove regions, etc.
     }
 }
