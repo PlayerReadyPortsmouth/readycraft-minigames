@@ -7,8 +7,6 @@ import com.auroraschaos.minigames.game.race.RaceGame;
 import com.auroraschaos.minigames.gui.GUIManager;
 import com.auroraschaos.minigames.party.PartyManager;
 import com.auroraschaos.minigames.stats.StatsManager;
-import com.auroraschaos.minigames.scoreboard.QueueScoreboardManager;
-import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -48,7 +46,6 @@ public class GameManager {
     private final PartyManager partyManager;
     private final StatsManager statsManager;
     private final GUIManager guiManager;
-    private final QueueScoreboardManager queueSB;
 
     /** Keeps a queue of players (or parties) waiting for a particular minigame+mode. */
     private final Map<String, Queue<QueueEntry>> queueMap = new HashMap<>();
@@ -75,7 +72,6 @@ public class GameManager {
         this.partyManager = partyManager;
         this.statsManager = statsManager;
         this.guiManager   = guiManager;
-        this.queueSB      = new QueueScoreboardManager(plugin, this);
 
         // Optional: periodic heartbeat to update action-bar even if no join/leave event
         startQueueHeartbeat();
