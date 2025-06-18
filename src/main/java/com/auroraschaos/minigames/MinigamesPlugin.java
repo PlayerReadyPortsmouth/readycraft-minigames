@@ -215,10 +215,11 @@ public class MinigamesPlugin extends JavaPlugin {
     }
 
     /**
-     * Gets the ArenaManager responsible for managing arena schematics and instances.
-     * @return The ArenaManager instance.
+     * Gets the {@link ArenaService} responsible for managing arena schematics and instances.
+     *
+     * @return The arena service instance.
      */
-    public ArenaService getArenaManager() {
+    public ArenaService getArenaService() {
         return arenaService;
     }
 
