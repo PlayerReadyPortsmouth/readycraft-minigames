@@ -87,7 +87,12 @@ public class MinigamesPlugin extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        // TODO: Save data, clean up tasks
+        if (arenaService != null) {
+            arenaService.shutdownAll();
+        }
+        if (statsManager != null) {
+            statsManager.save();
+        }
         getLogger().info("MinigamesPlugin has been disabled!");
     }
 
@@ -136,6 +141,9 @@ public class MinigamesPlugin extends JavaPlugin {
             guiManager
         );
         queueSB = new QueueScoreboardManager(this, gameManager);
+
+        // Load and register arenas from configuration
+        arenaService.initializeAll();
     }
 
     private Map<String, List<GameMode>> modesPerGame = new HashMap<>();

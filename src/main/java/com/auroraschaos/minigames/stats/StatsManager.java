@@ -155,6 +155,19 @@ public class StatsManager {
         return getWins(playerUUID, gameType) + getLosses(playerUUID, gameType);
     }
 
+    /**
+     * Persist any pending statistic changes to disk or database.
+     * This should be invoked when the plugin shuts down to avoid
+     * losing data.
+     */
+    public void save() {
+        if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
+            saveFlatfile();
+        } else {
+            // TODO: flush to SQL backend when implemented
+        }
+    }
+
     // -------------------
     // Helpers
     // -------------------

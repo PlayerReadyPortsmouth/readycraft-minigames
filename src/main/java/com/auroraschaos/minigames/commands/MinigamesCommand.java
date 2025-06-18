@@ -3,6 +3,7 @@ package com.auroraschaos.minigames.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 import com.auroraschaos.minigames.MinigamesPlugin;
 import com.auroraschaos.minigames.game.GameManager;
@@ -166,11 +167,23 @@ public class MinigamesCommand implements CommandExecutor, TabCompleter {
      * @param args   The command arguments. Optionally includes a target player name.
      */
     private void handleStats(Player player, String[] args) {
-        if (args.length == 1) {
-            player.sendMessage(ChatColor.YELLOW + "Your stats: (not implemented)");
-        } else {
-            String targetName = args[1];
-            player.sendMessage(ChatColor.YELLOW + "Stats for " + targetName + ": (not implemented)");
+        Player target = player;
+        if (args.length >= 2) {
+            target = Bukkit.getPlayer(args[1]);
+            if (target == null) {
+                player.sendMessage(ChatColor.RED + "Player not found.");
+                return;
+            }
+        }
+
+        UUID id = target.getUniqueId();
+        player.sendMessage(ChatColor.AQUA + "--- Stats for " + target.getName() + " ---");
+        for (String key : plugin.getConfig().getConfigurationSection("minigames").getKeys(false)) {
+            int wins = plugin.getStatsManager().getWins(id, key.toUpperCase());
+            int losses = plugin.getStatsManager().getLosses(id, key.toUpperCase());
+            int plays = wins + losses;
+            player.sendMessage(ChatColor.YELLOW + key.toUpperCase() + ChatColor.WHITE + ": " +
+                    "Wins " + wins + ", Losses " + losses + ", Plays " + plays);
         }
     }
 
