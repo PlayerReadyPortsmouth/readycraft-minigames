@@ -93,8 +93,8 @@ public class PartyManager {
             playerToParty.remove(memberUUID);
             Player p = Bukkit.getPlayer(memberUUID);
             if (p != null && p.isOnline()) {
-                // Reset name color to default (by removing them from the team)
-                ScoreboardTeamRemover(p);
+                // Reset name color to default (by removing them from any teams)
+                removeFromScoreboardTeams(p);
             }
         }
 
@@ -225,10 +225,10 @@ public class PartyManager {
      * If you need to forcibly remove a player’s name from any scoreboard team (e.g. when they leave),
      * call this method.
      */
-    private void ScoreboardTeamRemover(Player p) {
+    private void removeFromScoreboardTeams(Player player) {
         for (Team team : mainScoreboard.getTeams()) {
-            if (team.hasEntry(p.getName())) {
-                team.removeEntry(p.getName());
+            if (team.hasEntry(player.getName())) {
+                team.removeEntry(player.getName());
             }
         }
     }
