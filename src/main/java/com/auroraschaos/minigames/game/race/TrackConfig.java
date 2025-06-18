@@ -59,7 +59,4 @@ public class TrackConfig {
         return config.contains(path);
     }
 
-    public KartConfig getDefaultKartConfig() {
-        throw new UnsupportedOperationException("Unimplemented method 'getDefaultKartConfig'");
-    }
 }
