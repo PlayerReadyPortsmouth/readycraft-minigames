@@ -154,6 +154,20 @@ public class GUIManager implements Listener {
             slot++;
         }
 
+
+        // Back button in the final slot
+        ItemStack item = new ItemStack(Material.BARRIER);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "Go Back");
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.YELLOW + "Return to previous menu");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        inv.setItem(8, item);
+
+
         return inv;
     }
 
@@ -200,6 +214,12 @@ public class GUIManager implements Listener {
 
             ItemStack clicked = inv.getItem(slot);
             if (clicked == null || !clicked.hasItemMeta()) return;
+
+            // If the user wishes to go back to the previous menu
+            if (clicked.getItemMeta().getDisplayName().equals(ChatColor.RED + "Go Back")) {
+                openMainMenu(p);
+                return;
+            }
 
             String modeName = ChatColor.stripColor(clicked.getItemMeta().getDisplayName()).replace(" ", "_");
             String gameType = playerToGameType.get(p.getUniqueId());
