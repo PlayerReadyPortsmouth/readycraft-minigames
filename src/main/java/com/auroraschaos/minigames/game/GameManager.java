@@ -435,9 +435,6 @@ public class GameManager {
         arenaService.resetArena(arena);
         arena.setInUse(false);
 
-        // 3) Update stats via StatsManager
-        statsManager.recordGameResult(instance);
-
         plugin.getLogger().info("Ended game " + instanceId + " (" + instance.getType() + ")");
     }
 
