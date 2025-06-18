@@ -115,3 +115,40 @@ jobs:
           curl -X POST "$WEBHOOK_URL" \
                -H "Content-Type: application/json" \
                --data @payload.json
+
+  # Test plugin on a Paper server using only the artifact
+  test-paper:
+    name: Test plugin on Paper server
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare server directories
+        run: |
+          mkdir -p server/plugins
+
+      - name: Download plugin JAR artifact into plugins folder
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-jar
+          path: server/plugins
+
+      - name: Download Paper server
+        run: |
+          curl -sSL "https://papermc.io/api/v2/projects/paper/versions/1.20.1/builds/latest/downloads/paper-1.20.1.jar" \
+            -o server/paper.jar
+          echo "eula=true" > server/eula.txt
+
+      - name: Launch and verify plugin
+        run: |
+          cd server
+          java -jar paper.jar nogui > server.log 2>&1 &
+          PID=$!
+          sleep 30
+          if grep -q "Enabling MinigamesPlugin" server.log; then
+            echo "✅ Plugin loaded successfully"
+          else
+            echo "❌ Plugin did NOT load; logs:" && cat server.log
+            exit 1
+          fi
+          kill $PID
