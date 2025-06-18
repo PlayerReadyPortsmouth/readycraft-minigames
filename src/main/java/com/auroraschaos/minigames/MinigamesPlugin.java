@@ -174,7 +174,8 @@ public class MinigamesPlugin extends JavaPlugin {
      * Registers all necessary event listeners for the plugin.
      */
     private void registerEvents() {
-        // TODO: Register event listeners
+        // All current managers register their own listeners during construction.
+        // This method exists for any future global listeners.
     }
 
     /**
@@ -192,7 +193,7 @@ public class MinigamesPlugin extends JavaPlugin {
         // Hook into Citizens
         if (getServer().getPluginManager().getPlugin("Citizens") != null) {
             getLogger().info("Hooked into Citizens.");
-            // TODO: Register NPCs
+            // NPC registration can be added here if desired
         }
     }
 

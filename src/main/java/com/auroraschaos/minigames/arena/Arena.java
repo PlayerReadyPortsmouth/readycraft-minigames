@@ -2,7 +2,13 @@
 package com.auroraschaos.minigames.arena;
 
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 import com.sk89q.worldedit.math.BlockVector3;
+
+import java.util.logging.Level;
+import com.auroraschaos.minigames.MinigamesPlugin;
+import com.auroraschaos.minigames.arena.WorldEditSchematicLoader;
+import com.auroraschaos.minigames.arena.ArenaCreationException;
 
 import java.util.Map;
 
@@ -57,13 +63,28 @@ public class Arena {
      * Reset the arena by re-pasting the schematic and resetting any state.
      */
     public void reset() {
-        // TODO: implement using your schematic loader
+        WorldEditSchematicLoader loader =
+            new WorldEditSchematicLoader(MinigamesPlugin.getInstance());
+        try {
+            loader.loadSchematic(
+                schematic,
+                world,
+                new Vector(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ())
+            );
+            inUse = false;
+        } catch (ArenaCreationException ex) {
+            MinigamesPlugin.getInstance().getLogger().log(
+                Level.SEVERE,
+                "[Arena] Failed to reset arena '" + name + "'",
+                ex
+            );
+        }
     }
 
     /**
      * Clean up any resources (scheduled tasks, regions, etc.) when shutting down.
      */
     public void cleanup() {
-        // TODO: cancel tasks, remove regions, etc.
+        reset();
     }
 }

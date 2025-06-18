@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -72,11 +71,13 @@ public class StatsManager {
     }
 
     private void initMySqlStorage() {
-        // TODO: initialize your JDBC DataSource here, e.g. HikariCP with statsConfig.getMysqlConfig()
-        // StatsConfig.MySQLConfig cfg = statsConfig.getMysqlConfig();
-        // String url = "jdbc:mysql://" + cfg.getHost() + ":" + cfg.getPort() + "/" + cfg.getDatabase();
-        // ... set up DataSource ...
-        plugin.getLogger().info("[StatsManager] MySQL storage selected, initialization pending.");
+        // A real MySQL backend has not been implemented yet. For now we simply
+        // warn the server owner that statistics will not persist when using
+        // the MySQL option.
+        plugin.getLogger().warning(
+            "[StatsManager] MySQL storage selected but not implemented. " +
+            "Stats will be kept in memory only."
+        );
     }
 
     private void scheduleAutoSave() {
@@ -122,8 +123,10 @@ public class StatsManager {
             statsStorage.set(path, current + 1);
             saveFlatfile();
         } else {
-            // TODO: implement SQL increment for wins
-            plugin.getLogger().info("[StatsManager] (MySQL) recordWin for " + playerUUID + " in " + gameType);
+            // MySQL backend not implemented
+            plugin.getLogger().warning(
+                "[StatsManager] recordWin called but MySQL storage is not available."
+            );
         }
     }
 
@@ -134,8 +137,10 @@ public class StatsManager {
             statsStorage.set(path, current + 1);
             saveFlatfile();
         } else {
-            // TODO: implement SQL increment for losses
-            plugin.getLogger().info("[StatsManager] (MySQL) recordLoss for " + playerUUID + " in " + gameType);
+            // MySQL backend not implemented
+            plugin.getLogger().warning(
+                "[StatsManager] recordLoss called but MySQL storage is not available."
+            );
         }
     }
 
@@ -143,20 +148,20 @@ public class StatsManager {
         if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
             String path = "stats." + playerUUID + "." + gameType + ".wins";
             return statsStorage.getInt(path, 0);
-        } else {
-            // TODO: query SQL
-            return 0;
         }
+
+        // MySQL backend not implemented
+        return 0;
     }
 
     public int getLosses(UUID playerUUID, String gameType) {
         if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
             String path = "stats." + playerUUID + "." + gameType + ".losses";
             return statsStorage.getInt(path, 0);
-        } else {
-            // TODO: query SQL
-            return 0;
         }
+
+        // MySQL backend not implemented
+        return 0;
     }
 
     public int getTotalPlays(UUID playerUUID, String gameType) {
@@ -172,7 +177,9 @@ public class StatsManager {
         if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
             saveFlatfile();
         } else {
-            // TODO: flush to SQL backend when implemented
+            plugin.getLogger().warning(
+                "[StatsManager] save() called but MySQL storage is not implemented."
+            );
         }
     }
 
