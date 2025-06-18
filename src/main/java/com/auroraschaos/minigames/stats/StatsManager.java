@@ -27,6 +27,9 @@ public class StatsManager {
     private File statsFile;
     private FileConfiguration statsStorage;
 
+    /** Lock used to protect concurrent access to {@code statsStorage}. */
+    private final Object storageLock = new Object();
+
     // MySQL storage (stubbed—replace with your preferred DataSource)
     // private DataSource mysqlDataSource;
 
@@ -117,10 +120,12 @@ public class StatsManager {
 
     public void recordWin(UUID playerUUID, String gameType) {
         if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
-            String path = "stats." + playerUUID + "." + gameType + ".wins";
-            int current = statsStorage.getInt(path, 0);
-            statsStorage.set(path, current + 1);
-            saveFlatfile();
+            synchronized (storageLock) {
+                String path = "stats." + playerUUID + "." + gameType + ".wins";
+                int current = statsStorage.getInt(path, 0);
+                statsStorage.set(path, current + 1);
+                saveFlatfile();
+            }
         } else {
             // TODO: implement SQL increment for wins
             plugin.getLogger().info("[StatsManager] (MySQL) recordWin for " + playerUUID + " in " + gameType);
@@ -129,10 +134,12 @@ public class StatsManager {
 
     public void recordLoss(UUID playerUUID, String gameType) {
         if (statsConfig.getStorageType() == StatsConfig.StorageType.FLATFILE) {
-            String path = "stats." + playerUUID + "." + gameType + ".losses";
-            int current = statsStorage.getInt(path, 0);
-            statsStorage.set(path, current + 1);
-            saveFlatfile();
+            synchronized (storageLock) {
+                String path = "stats." + playerUUID + "." + gameType + ".losses";
+                int current = statsStorage.getInt(path, 0);
+                statsStorage.set(path, current + 1);
+                saveFlatfile();
+            }
         } else {
             // TODO: implement SQL increment for losses
             plugin.getLogger().info("[StatsManager] (MySQL) recordLoss for " + playerUUID + " in " + gameType);
@@ -181,11 +188,13 @@ public class StatsManager {
     // -------------------
 
     private void saveFlatfile() {
-        try {
-            statsStorage.save(statsFile);
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE,
-                "[StatsManager] Error saving stats file: " + statsFile.getAbsolutePath(), e);
+        synchronized (storageLock) {
+            try {
+                statsStorage.save(statsFile);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE,
+                    "[StatsManager] Error saving stats file: " + statsFile.getAbsolutePath(), e);
+            }
         }
     }
 }
