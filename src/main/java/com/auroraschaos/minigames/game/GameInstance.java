@@ -269,7 +269,7 @@ public abstract class GameInstance {
             // End the match
             stop();
             // Reset and free the arena
-            plugin.getArenaManager().resetArena(arena);
+            plugin.getArenaService().resetArena(arena);
             arena.setInUse(false);
             Bukkit.getLogger().info("Game " + id + " (" + type + ") ended early due to too few players.");
         }

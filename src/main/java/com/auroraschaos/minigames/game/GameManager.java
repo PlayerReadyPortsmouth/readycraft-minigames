@@ -24,7 +24,7 @@ import java.util.logging.Level;
 /**
  * GameManager is responsible for:
  *  1. Managing player queues for each minigame (with optional GameMode).
- *  2. Spinning up dynamic Arena instances on demand via ArenaManager.
+ *  2. Spinning up dynamic Arena instances on demand via ArenaService.
  *  3. Tracking ongoing GameInstance objects (one per running game).
  *  4. Handling game start/end lifecycle events.
  *
