@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;

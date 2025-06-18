@@ -9,7 +9,6 @@ import com.auroraschaos.minigames.party.PartyManager;
 import com.auroraschaos.minigames.stats.StatsManager;
 import com.auroraschaos.minigames.scoreboard.QueueScoreboardManager;
 import com.auroraschaos.minigames.scoreboard.ScoreboardManager;
-import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
