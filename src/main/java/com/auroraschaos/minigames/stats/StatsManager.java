@@ -96,14 +96,22 @@ public class StatsManager {
     // -------------------
 
     public void recordGameResult(GameInstance instance) {
+        if (instance.getParticipants().isEmpty()) {
+            return;
+        }
+
+        Player winner = null;
         // Default logic: last survivor is winner
         if (instance.getParticipants().size() == 1) {
-            UUID winnerId = instance.getParticipants().get(0).getUniqueId();
-            recordWin(winnerId, instance.getType());
+            winner = instance.getParticipants().get(0);
+            recordWin(winner.getUniqueId(), instance.getType());
         }
-        // Everyone else is a loser
+
+        // Everyone except the winner is a loser
         for (Player p : instance.getParticipants()) {
-            recordLoss(p.getUniqueId(), instance.getType());
+            if (winner == null || !p.equals(winner)) {
+                recordLoss(p.getUniqueId(), instance.getType());
+            }
         }
     }
 

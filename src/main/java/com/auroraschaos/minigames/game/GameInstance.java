@@ -251,6 +251,9 @@ public abstract class GameInstance {
         }
         player.sendMessage("§eYou have left " + type + " [" + gameMode + "].");
 
+        // Record a loss for the departing player immediately
+        statsManager.recordLoss(player.getUniqueId(), type);
+
         // 5) Notify remaining participants
         for (Player p : participants) {
             p.sendMessage("§c" + player.getName() + " has left the game!");
@@ -258,17 +261,10 @@ public abstract class GameInstance {
 
         // 6) If only one (or zero) participants remain, end the game early
         if (participants.size() <= 1) {
-            // If one player remains, declare them the winner and record stats
+            // If one player remains, simply announce the winner.
             if (participants.size() == 1) {
                 Player winner = participants.get(0);
                 winner.sendMessage("§6You are the winner of " + type + "!");
-                statsManager.recordWin(winner.getUniqueId(), type);
-            }
-            // Record losses for any who remain in "participants" (if any)
-            for (Player p : participants) {
-                if (participants.size() == 0 || !p.equals(participants.get(0))) {
-                    statsManager.recordLoss(p.getUniqueId(), type);
-                }
             }
             // End the match
             stop();
