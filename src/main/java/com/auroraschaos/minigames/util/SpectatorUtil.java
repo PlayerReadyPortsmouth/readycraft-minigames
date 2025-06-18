@@ -3,7 +3,6 @@ package com.auroraschaos.minigames.util;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BoundingBox;
 
 import com.auroraschaos.minigames.arena.Arena;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -51,10 +50,8 @@ public class SpectatorUtil {
             originVec.getY() + 50,
             originVec.getZ() + 100
         );
-        @SuppressWarnings("unused")
-        BoundingBox box = BoundingBox.of(minLoc, maxLoc);
-        // If you need to store this box somewhere or schedule a repeating task 
-        // to clamp players to this box, you can do so here.
+        // Calculate bounds players should be clamped to. Implement clamping
+        // logic later using BoundingBox.of(minLoc, maxLoc).
 
         p.setCollidable(false);
     }

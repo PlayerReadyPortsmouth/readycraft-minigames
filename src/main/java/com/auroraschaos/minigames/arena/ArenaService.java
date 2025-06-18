@@ -15,10 +15,6 @@ import java.util.Map;
 public class ArenaService {
     private final MinigamesPlugin plugin;
     private final ArenaDefinitionRepository definitionRepo;
-    @SuppressWarnings("unused")
-    private final SlotAllocator slotAllocator;
-    @SuppressWarnings("unused")
-    private final SchematicLoader schematicLoader;
     private final ArenaFactory arenaFactory;
     private final ArenaRegistry registry;
     private final ArenaResetService resetService;
@@ -30,8 +26,6 @@ public class ArenaService {
                         ArenaResetService resetService) {
         this.plugin        = plugin;
         this.definitionRepo= new ArenaDefinitionRepository(config);
-        this.slotAllocator = slotAllocator;
-        this.schematicLoader = schematicLoader;
         this.arenaFactory  = new ArenaFactory(slotAllocator, schematicLoader);
         this.registry      = new ArenaRegistry();
         this.resetService  = resetService;
