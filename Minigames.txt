@@ -1,0 +1,394 @@
+Minecraft Minigames Plugin - Minigames List with Game Flows
+
+1. TNT Run
+Description: Players run across a platform of TNT and sand/gravel blocks that disappear beneath
+them, last player standing wins.
+Game Flow:
+Game Start
+
+Players on TNT platform
+
+Blocks disappear as players move
+
+Players fall off
+
+Last player remaining
+
+Game End
+
+1
+
+2. Bed Wars
+Description: Teams spawn on islands with beds. Players can respawn while their bed is intact. Destroy
+enemy beds to eliminate them.
+Game Flow:
+Game Start
+
+Teams collect resources
+
+Build defenses and shops
+
+Destroy enemy beds
+
+Eliminate opponents
+
+Last team standing
+
+Game End
+
+2
+
+3. Sky Wars
+Description: Players spawn on floating islands, loot chests, and fight to be the last player standing.
+Game Flow:
+Game Start
+
+Players loot islands
+
+Bridge to other islands
+
+Combat
+
+Last player standing
+
+Game End
+
+3
+
+4. Spleef
+Description: Players try to break blocks under opponents to make them fall. Last player remaining
+wins.
+Game Flow:
+Game Start
+
+Players break blocks
+
+Players fall
+
+Last player standing
+
+Game End
+
+4
+
+5. Parkour Race
+Description: Players race through an obstacle course. First player to reach the finish wins.
+Game Flow:
+Game Start
+
+Players navigate parkour
+
+Checkpoints and obstacles
+
+Finish line reached
+
+Game End
+
+5
+
+6. Mini Walls
+Description: Teams defend their wither boss while attacking enemy withers. When a wither dies,
+players cant respawn. Last team alive wins.
+Game Flow:
+Game Start
+
+Teams build defenses
+
+Attack enemy withers
+
+Withers destroyed
+
+Teams lose respawn
+
+Eliminate enemies
+
+Last team standing
+
+Game End
+
+6
+
+7. Trouble in Terrorist Town (TTT)
+Description: Players are assigned hidden roles: Innocents, Detectives, or Traitors. Traitors eliminate
+innocents without getting caught.
+Game Flow:
+Game Start
+
+Roles assigned secretly
+
+Detectives investigate
+
+Traitors sabotage
+
+Combat and suspicion
+
+Win condition reached
+
+Game End
+
+7
+
+8. Capture the Flag
+Description: Teams compete to steal the enemys flag and return it to their base.
+Game Flow:
+Game Start
+
+Teams plan offense/defense
+
+Capture enemy flag
+
+Return to base
+
+Score point
+
+Repeat until time runs out
+
+Game End
+
+8
+
+9. Block Hunt
+Description: Hiders disguise as blocks while seekers try to find them.
+Game Flow:
+Game Start
+
+Hiders hide
+
+Seekers hunt
+
+Hiders caught
+
+Last hider wins or time expires
+
+Game End
+
+9
+
+10. Mob Arena
+Description: Players fight waves of mobs and survive as long as possible.
+Game Flow:
+Game Start
+
+Wave 1 begins
+
+Progressive waves
+
+Increasing difficulty
+
+Players die or complete all waves
+
+Game End
+
+10
+
+11. Gladiator Duel
+Description: Players fight one-on-one in a small arena until one wins.
+Game Flow:
+Game Start
+
+Players face off
+
+Combat
+
+Winner determined
+
+Game End
+
+11
+
+12. Build Battle
+Description: Players build structures based on a given theme. At the end, everyone votes and the
+highest-scoring build wins.
+Game Flow:
+Game Start
+
+Theme assigned
+
+Players build structures
+
+Time expires
+
+Players vote
+
+Highest score wins
+
+Game End
+
+12
+
+13. Quake
+Description: Fast-paced shooting minigame using bows (or projectiles). One-shot kills; first to X kills
+wins.
+Game Flow:
+Game Start
+
+Players spawn
+
+Combat with projectiles
+
+Score points per kill
+
+First to target score wins
+
+Game End
+
+13
+
+14. Maze Runner
+Description: Players navigate and escape a dynamically generated maze.
+Game Flow:
+Game Start
+
+Players enter maze
+
+Find exit
+
+Reach finish line
+
+Game End
+
+14
+
+15. Lucky Blocks
+Description: Players open random lucky blocks that spawn items, mobs, or traps.
+Game Flow:
+Game Start
+
+Players break lucky blocks
+
+Random events triggered
+
+Combat and survival
+
+Last player standing or time expires
+
+Game End
+
+15
+
+16. Wool Wars
+Description: Players or teams collect colored wool to complete objectives (e.g. fill a monument).
+Game Flow:
+Game Start
+
+Players gather resources
+
+Collect wool
+
+Complete monument
+
+First to finish wins
+
+Game End
+
+16
+
+17. Fishing Frenzy
+Description: Players compete to catch as many fish as possible within a time limit.
+Game Flow:
+Game Start
+
+Players fish
+
+Time limit counts down
+
+Most fish caught wins
+
+Game End
+
+17
+
+18. Dodgeball
+Description: Players throw snowballs to eliminate opponents, last team standing wins.
+Game Flow:
+Game Start
+
+Players split into teams
+
+Throw snowballs
+
+Eliminate opponents
+
+Last team standing wins
+
+Game End
+
+18
+
+19. Slime Soccer
+Description: Players push a slimeball into the enemy goal using melee attacks.
+Game Flow:
+Game Start
+
+Players control slimeball
+
+Score goals
+
+Time limit or target score reached
+
+Team with most goals wins
+
+Game End
+
+19
+
+20. Boss Battle
+Description: Players team up to fight a powerful custom boss mob.
+Game Flow:
+Game Start
+
+Boss spawns
+
+Players fight boss
+
+Boss uses special attacks
+
+Boss defeated
+
+Game End
+
+20
+
+21. Mini Walls
+Description: Teams defend their wither boss while attacking enemy withers. When a wither dies,
+players cant respawn.
+Game Flow:
+Game Start
+
+Teams build defenses
+
+Attack enemy withers
+
+Withers destroyed
+
+Teams lose respawn
+
+Eliminate enemies
+
+Last team standing
+
+Game End
+
+21
+
+22. Trouble in Terrorist Town (TTT)
+Description: Players are assigned hidden roles: Innocents, Detectives, or Traitors. Traitors eliminate
+innocents without getting caught.
+Game Flow:
+Game Start
+
+Roles assigned secretly
+
+Detectives investigate
+
+Traitors sabotage
+
+Combat and suspicion
+
+Win condition reached
+
+Game End
+
+22
+
+
