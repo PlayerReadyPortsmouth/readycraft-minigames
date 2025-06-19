@@ -15,6 +15,7 @@ public class ConfigManager {
     private GameModeConfig gameModeConfig;
     private PartyConfig partyConfig;
     private StatsConfig statsConfig;
+    private SpleefConfig spleefConfig;
     //private GuiConfig guiConfig;
     //private ScoreboardConfig scoreboardConfig;
     //private CountdownConfig countdownConfig;
@@ -40,6 +41,7 @@ public class ConfigManager {
         gameModeConfig    = parseGameModeConfig();
         partyConfig       = parsePartyConfig();
         statsConfig       = parseStatsConfig();
+        spleefConfig      = parseSpleefConfig();
         //guiConfig         = parseGuiConfig();
         //scoreboardConfig  = parseScoreboardConfig();
         //countdownConfig   = parseCountdownConfig();
@@ -74,6 +76,16 @@ public class ConfigManager {
             throw new ConfigurationException("Missing '" + path + "' section in config.yml");
         }
         return StatsConfig.from(config.getConfigurationSection(path));
+    }
+
+    private SpleefConfig parseSpleefConfig() throws ConfigurationException {
+        java.io.File file = new java.io.File(plugin.getDataFolder(), "Spleef.yml");
+        if (!file.exists()) {
+            plugin.saveResource("Spleef.yml", false);
+        }
+        org.bukkit.configuration.file.YamlConfiguration cfg =
+            org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(file);
+        return SpleefConfig.from(cfg);
     }
 /**
     private GuiConfig parseGuiConfig() throws ConfigurationException {
@@ -114,6 +126,7 @@ public class ConfigManager {
     public GameModeConfig getGameModeConfig() { return gameModeConfig; }
     public PartyConfig getPartyConfig() { return partyConfig; }
     public StatsConfig getStatsConfig() { return statsConfig; }
+    public SpleefConfig getSpleefConfig() { return spleefConfig; }
     //public GuiConfig getGuiConfig() { return guiConfig; }
     //public ScoreboardConfig getScoreboardConfig() { return scoreboardConfig; }
     //public CountdownConfig getCountdownConfig() { return countdownConfig; }
