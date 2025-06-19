@@ -2,7 +2,7 @@
 
 [![Minecraft Version](https://img.shields.io/badge/Spigot-1.13%2B-green)](https://www.spigotmc.org/) [![Java Version](https://img.shields.io/badge/Java-8%2B-brightgreen)](https://www.oracle.com/java/) [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A **modular**, **extensible**, and **fun** Minigames plugin for Spigot/Bukkit Minecraft servers. Out-of-the-box support for **TNT Run** and **SkyWars**, plus:
+A **modular**, **extensible**, and **fun** Minigames plugin for Spigot/Bukkit Minecraft servers. Out-of-the-box support for **TNT Run**, **SkyWars**, and **Spleef**, plus:
 
 - ❇️ Party system (team up to queue together)  
 - 🗓️ Flexible queue & countdown with action-bars & scoreboards  
@@ -15,8 +15,9 @@ A **modular**, **extensible**, and **fun** Minigames plugin for Spigot/Bukkit Mi
 
 ## 🚀 Features
 
-- **TNT Run**: Dynamic floor destruction, per-arena timer & “Players Left” sidebar.  
-- **SkyWars**: WE schematic paste, chest loot tables, ring-shrinking arena, random events.  
+- **TNT Run**: Dynamic floor destruction, per-arena timer & “Players Left” sidebar.
+- **SkyWars**: WE schematic paste, chest loot tables, ring-shrinking arena, random events.
+- **Spleef**: Break snow blocks or launch snowballs to drop opponents; last player standing wins.
 - **Party System**: Create/invite/disband parties with colored name-tag teams.  
 - **Queue Management**: Min/max players, 60s countdown, chat & action-bar updates.  
 - **Scoreboards**:  

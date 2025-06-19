@@ -1,0 +1,8 @@
+# Global Spleef settings
+
+spawn_y_offset: 10          # height offset above arena origin for spawns
+game_duration: 300          # round length in seconds
+snowball_cooldown: 1        # seconds between snowball throws
+breakable_blocks:
+  - SNOW_BLOCK
+  - SNOW

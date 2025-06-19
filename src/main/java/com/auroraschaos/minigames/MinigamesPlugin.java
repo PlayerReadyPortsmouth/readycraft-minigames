@@ -264,4 +264,11 @@ public class MinigamesPlugin extends JavaPlugin {
     public QueueScoreboardManager getQueueScoreboardManager(){
         return queueSB;
     }
+
+    /**
+     * Provides access to the central ConfigManager containing all plugin settings.
+     */
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
 }
