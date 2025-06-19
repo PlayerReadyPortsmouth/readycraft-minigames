@@ -1,0 +1,44 @@
+# Trouble in Terrorist Town settings
+spawn_y_offset: 10
+game_duration: 300
+traitor_ratio: 0.25
+detective_ratio: 0.15
+# Players earn shop points for kills. Traitors and detectives can
+# open the shop with the emerald in their hotbar.
+shop:
+  items:
+    dagger:
+      slot: 0
+      material: IRON_SWORD
+      name: "&cOne-Hit Dagger"
+      lore:
+        - "&7Instant kill on hit"
+      cost: 2
+    golden_gun:
+      slot: 1
+      material: BOW
+      name: "&6Golden Gun"
+      lore:
+        - "&7High damage ranged weapon"
+      cost: 2
+    revive_totem:
+      slot: 2
+      material: TOTEM_OF_UNDYING
+      name: "&aRevive Totem"
+      lore:
+        - "&7Come back from death once"
+      cost: 3
+    melee_weapon:
+      slot: 3
+      material: DIAMOND_SWORD
+      name: "&7Melee Weapon"
+      lore:
+        - "&7Standard close combat weapon"
+      cost: 1
+    ranged_weapon:
+      slot: 4
+      material: CROSSBOW
+      name: "&7Ranged Weapon"
+      lore:
+        - "&7Standard ranged weapon"
+      cost: 1

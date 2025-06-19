@@ -18,7 +18,8 @@ A **modular**, **extensible**, and **fun** Minigames plugin for Spigot/Bukkit Mi
 - **TNT Run**: Dynamic floor destruction, per-arena timer & “Players Left” sidebar.
 - **SkyWars**: WE schematic paste, chest loot tables, ring-shrinking arena, random events.
 - **Spleef**: Break snow blocks or launch snowballs to drop opponents; last player standing wins.
-- **Party System**: Create/invite/disband parties with colored name-tag teams.  
+- **Trouble in Terrorist Town**: Hidden roles of traitor, detective and innocent battle until one team remains. Item shop contents and costs are configured in `TTT.yml`.
+- **Party System**: Create/invite/disband parties with colored name-tag teams.
 - **Queue Management**: Min/max players, 60s countdown, chat & action-bar updates.  
 - **Scoreboards**:  
   - Queue sidebar showing waiting players & party leaders  
