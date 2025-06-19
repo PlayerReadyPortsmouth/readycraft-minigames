@@ -5,6 +5,7 @@ import com.auroraschaos.minigames.arena.Arena;
 import com.auroraschaos.minigames.arena.ArenaService;
 import com.auroraschaos.minigames.game.race.RaceGame;
 import com.auroraschaos.minigames.game.SpleefGame;
+import com.auroraschaos.minigames.game.TTTGame;
 import com.auroraschaos.minigames.gui.GUIManager;
 import com.auroraschaos.minigames.party.PartyManager;
 import com.auroraschaos.minigames.stats.StatsManager;
@@ -401,6 +402,9 @@ public class GameManager {
                 break;
             case "SPLEEF":
                 instance = new SpleefGame(type, mode, plugin, arena, players);
+                break;
+            case "TTT":
+                instance = new TTTGame(type, mode, plugin, arena, players);
                 break;
             case "RACE":
                 try {

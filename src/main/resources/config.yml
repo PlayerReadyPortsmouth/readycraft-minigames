@@ -43,7 +43,18 @@ minigames:
     enabled_modes:
       - CLASSIC
       - TEAMS
-  
+
+  TTT:
+    display_name: "§5Trouble In Terrorist Town"
+    icon: BOW
+    lore:
+      - "§7Find the traitors before it's too late."
+      - "§7Keep your eyes open!"
+    minPlayers: 4
+    maxPlayers: 16
+    enabled_modes:
+      - CLASSIC
+
   RACE:
     display_name: '&eKart Racing'
     icon: BOAT

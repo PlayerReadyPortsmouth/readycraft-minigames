@@ -4,6 +4,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Map;
 
+import com.auroraschaos.minigames.config.TTTConfig;
+
 /**
  * Central manager for loading and validating all plugin configuration files.
  */
@@ -16,6 +18,7 @@ public class ConfigManager {
     private PartyConfig partyConfig;
     private StatsConfig statsConfig;
     private SpleefConfig spleefConfig;
+    private TTTConfig tttConfig;
     //private GuiConfig guiConfig;
     //private ScoreboardConfig scoreboardConfig;
     //private CountdownConfig countdownConfig;
@@ -42,6 +45,7 @@ public class ConfigManager {
         partyConfig       = parsePartyConfig();
         statsConfig       = parseStatsConfig();
         spleefConfig      = parseSpleefConfig();
+        tttConfig         = parseTTTConfig();
         //guiConfig         = parseGuiConfig();
         //scoreboardConfig  = parseScoreboardConfig();
         //countdownConfig   = parseCountdownConfig();
@@ -87,6 +91,16 @@ public class ConfigManager {
             org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(file);
         return SpleefConfig.from(cfg);
     }
+
+    private TTTConfig parseTTTConfig() throws ConfigurationException {
+        java.io.File file = new java.io.File(plugin.getDataFolder(), "TTT.yml");
+        if (!file.exists()) {
+            plugin.saveResource("TTT.yml", false);
+        }
+        org.bukkit.configuration.file.YamlConfiguration cfg =
+            org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(file);
+        return TTTConfig.from(cfg);
+    }
 /**
     private GuiConfig parseGuiConfig() throws ConfigurationException {
         final String path = "gui";
@@ -127,6 +141,7 @@ public class ConfigManager {
     public PartyConfig getPartyConfig() { return partyConfig; }
     public StatsConfig getStatsConfig() { return statsConfig; }
     public SpleefConfig getSpleefConfig() { return spleefConfig; }
+    public TTTConfig getTTTConfig() { return tttConfig; }
     //public GuiConfig getGuiConfig() { return guiConfig; }
     //public ScoreboardConfig getScoreboardConfig() { return scoreboardConfig; }
     //public CountdownConfig getCountdownConfig() { return countdownConfig; }
