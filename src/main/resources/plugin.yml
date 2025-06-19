@@ -29,4 +29,4 @@ permissions:
     description: Allows players to create and manage parties.
     default: true
 
-softdepend: [PlaceholderAPI, Citizens]
+softdepend: [PlaceholderAPI, Citizens, Multiverse-Core]
