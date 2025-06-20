@@ -163,6 +163,17 @@ public class ConfigManager {
     public TTTConfig getTTTConfig() { return tttConfig; }
     /** @return true if verbose logging is enabled. */
     public boolean isVerboseLogging() { return verboseLogging; }
+
+    /**
+     * Enable or disable verbose logging at runtime and persist to config.yml.
+     *
+     * @param enabled true to enable verbose logging
+     */
+    public void setVerboseLogging(boolean enabled) {
+        this.verboseLogging = enabled;
+        config.set("verboseLogging", enabled);
+        plugin.saveConfig();
+    }
     //public GuiConfig getGuiConfig() { return guiConfig; }
     //public ScoreboardConfig getScoreboardConfig() { return scoreboardConfig; }
     //public CountdownConfig getCountdownConfig() { return countdownConfig; }

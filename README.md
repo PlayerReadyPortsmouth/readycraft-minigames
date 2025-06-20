@@ -117,6 +117,12 @@ Global timers & event weights. Customize `event_interval`, `shrink_start`, loot-
 | `/party leave`                   | Leave your current party                   | `minigames.play`       |
 | `/party disband`                 | Disband your party (leader only)           | `minigames.play`       |
 
+| `/minigamesadmin forcestart <TYPE> <MODE>` | Force start queued game
+| `minigames.admin`      |
+| `/minigamesadmin verbose <on|off>` | Toggle verbose logging
+| `minigames.admin`      |
+| `/minigamesadmin dumpconfig`     | Dump config to console
+| `minigames.admin`      |
 ---
 
 ## 🧩 Extending & Contributing

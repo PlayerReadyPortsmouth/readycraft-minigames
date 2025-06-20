@@ -321,6 +321,31 @@ public class GameManager {
     }
 
     /**
+     * Force start the next game for a queue, ignoring minimum players.
+     *
+     * @param type minigame type
+     * @param mode selected game mode
+     * @return true if a game was started, false if queue empty
+     */
+    public boolean forceStart(String type, GameMode mode) {
+        String key = buildQueueKey(type, mode);
+        Queue<QueueEntry> queue = queueMap.get(key);
+        if (queue == null || queue.isEmpty()) {
+            return false;
+        }
+        cancelCountdownForQueue(key);
+
+        List<Player> players = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            QueueEntry e = queue.poll();
+            players.addAll(e.getPlayers());
+        }
+        queueMap.remove(key);
+        startNewGame(type, mode, players);
+        return true;
+    }
+
+    /**
      * Sends a chat message to every player in the queue (via normal chat).
      */
     private void broadcastToQueue(Queue<QueueEntry> queue, String message) {

@@ -17,6 +17,10 @@ commands:
     description: Manage parties
     usage: /party <subcommand>
     permission: minigames.party
+  minigamesadmin:
+    description: Administrative debug commands
+    usage: /minigamesadmin <subcommand>
+    permission: minigames.admin
 
 permissions:
   minigames.admin:
