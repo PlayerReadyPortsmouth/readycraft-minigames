@@ -49,5 +49,13 @@ public class CommandManager {
             PartyCommand partyExecutor = new PartyCommand(plugin);
             partyCmd.setExecutor(partyExecutor);
         }
+
+        // 4) /minigamesadmin command
+        PluginCommand adminCmd = plugin.getCommand("minigamesadmin");
+        if (adminCmd != null) {
+            AdminCommand adminExecutor = new AdminCommand(plugin);
+            adminCmd.setExecutor(adminExecutor);
+            adminCmd.setTabCompleter(adminExecutor);
+        }
     }
 }
