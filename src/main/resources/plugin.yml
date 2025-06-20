@@ -1,26 +1,26 @@
 name: MinigamesPlugin
 main: com.auroraschaos.minigames.MinigamesPlugin
 version: 1.0.0
-api-version: 1.21
+api-version: 1.20
 author: AurorasChaos
 
 commands:
-  minigames:
-    description: Main command for minigames (join, leave, stats, etc.)
-    usage: /minigames <subcommand>
-    permission: minigames.play
-  mgui:
-    description: Opens the Minigames GUI
-    usage: /mgui
-    permission: minigames.play
-  party:
-    description: Manage parties
-    usage: /party <subcommand>
-    permission: minigames.party
-  minigamesadmin:
-    description: Administrative debug commands
-    usage: /minigamesadmin <subcommand>
-    permission: minigames.admin
+    minigames:
+        description: Main command for minigames (join, leave, stats, etc.)
+        usage: /minigames <subcommand>
+        permission: minigames.play
+    mgui:
+        description: Opens the Minigames GUI
+        usage: /mgui
+        permission: minigames.play
+    party:
+        description: Manage parties
+        usage: /party <subcommand>
+        permission: minigames.party
+    minigamesadmin:
+        description: Administrative debug commands
+        usage: /minigamesadmin <subcommand>
+        permission: minigames.admin
 
 permissions:
   minigames.admin:

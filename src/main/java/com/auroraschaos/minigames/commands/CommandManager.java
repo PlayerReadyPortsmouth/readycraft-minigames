@@ -34,6 +34,8 @@ public class CommandManager {
             MinigamesCommand executor = new MinigamesCommand(plugin);
             minigamesCmd.setExecutor(executor);
             minigamesCmd.setTabCompleter(executor);
+        } else {
+            plugin.getLogger().warning("Command 'minigames' not found in plugin.yml");
         }
 
         // 2) /mgui command
@@ -42,12 +44,16 @@ public class CommandManager {
             MGUICommand guiExecutor = new MGUICommand(plugin);
             mguiCmd.setExecutor(guiExecutor);
             // No tab completion needed for /mgui
+        } else {
+            plugin.getLogger().warning("Command 'mgui' not found in plugin.yml");
         }
 
         PluginCommand partyCmd = plugin.getCommand("party");
-        if (partyCmd != null){
+        if (partyCmd != null) {
             PartyCommand partyExecutor = new PartyCommand(plugin);
             partyCmd.setExecutor(partyExecutor);
+        } else {
+            plugin.getLogger().warning("Command 'party' not found in plugin.yml");
         }
 
         // 4) /minigamesadmin command
@@ -56,6 +62,8 @@ public class CommandManager {
             AdminCommand adminExecutor = new AdminCommand(plugin);
             adminCmd.setExecutor(adminExecutor);
             adminCmd.setTabCompleter(adminExecutor);
+        } else {
+            plugin.getLogger().warning("Command 'minigamesadmin' not found in plugin.yml");
         }
     }
 }
