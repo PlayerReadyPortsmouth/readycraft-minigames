@@ -61,7 +61,7 @@ plugins/
    │  ├─ Arena2.yml
    │  └─ Defaults.yml
    └─ schematics/
-      └─ your_schematic.schem
+      └─ your_schematic.schem (.litematic also supported)
 ```
 
 ### `config.yml`
@@ -123,7 +123,7 @@ Global timers & event weights. Customize `event_interval`, `shrink_start`, loot-
 
 1. **GameType**: Extend `GameInstance` and override `onGameStart()`, `onGameEnd()`, (and optionally `requiresTicks()/tick()`).  
 2. **Registration**: Update `GameManager#startNewGame(...)` to wire your new class.  
-3. **Arena**: Drop a new `.yml` under `SkyWars/` (or your game folder) and schematic under `schematics/`.  
+3. **Arena**: Drop a new `.yml` under `SkyWars/` (or your game folder) and schematic (`.schem` or `.litematic`) under `schematics/`.
 4. **Submit** a PR—bug fixes, new minigames, docs!  
 
 ---

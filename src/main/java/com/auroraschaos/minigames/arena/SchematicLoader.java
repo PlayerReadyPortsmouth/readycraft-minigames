@@ -9,6 +9,9 @@ import org.bukkit.util.Vector;
 public interface SchematicLoader {
     /**
      * Load and paste the given schematic at the specified origin in the target world.
+     * The loader supports `.schem`, `.schematic` and `.litematic` files.
+     * The extension may be included in {@code schematicName} or omitted.
+     *
      * @param schematicName filename (or key) of the schematic to load
      * @param world         the Bukkit World instance
      * @param origin        the origin Vector where the schematic is pasted

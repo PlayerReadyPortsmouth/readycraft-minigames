@@ -33,9 +33,24 @@ public class WorldEditSchematicLoader implements SchematicLoader {
     @Override
     public void loadSchematic(String schematicName, World bukkitWorld, Vector originVec)
             throws ArenaCreationException {
-        File schemFile = new File(plugin.getDataFolder(), "schematics/" + schematicName + ".schem");
+        File baseDir = new File(plugin.getDataFolder(), "schematics");
+        File schemFile = new File(baseDir, schematicName);
+
         if (!schemFile.exists()) {
-            throw new ArenaCreationException("Schematic not found: " + schemFile.getAbsolutePath());
+            String[] exts = {".schem", ".schematic", ".litematic"};
+            for (String ext : exts) {
+                File alt = new File(baseDir, schematicName + ext);
+                if (alt.exists()) {
+                    schemFile = alt;
+                    break;
+                }
+            }
+        }
+
+        if (!schemFile.exists()) {
+            throw new ArenaCreationException(
+                "Schematic not found: " + new File(baseDir, schematicName).getAbsolutePath()
+            );
         }
 
         try {
