@@ -28,12 +28,16 @@ public class ArenaDefinition {
         this.resetIntervalTicks = resetIntervalTicks;
     }
 
-    public static ArenaDefinition from(ConfigurationSection sec) throws ConfigurationException {
+    public static ArenaDefinition from(ConfigurationSection sec)
+            throws ConfigurationException {
         String key = sec.getName().toLowerCase();
         String schematic = sec.getString("schematic");
         if (schematic == null || schematic.isEmpty()) {
-            throw new ConfigurationException("Missing 'schematic' for arena: " + key);
+            throw new ConfigurationException(
+                "Missing 'schematic' for arena: " + key
+            );
         }
+
         String world = sec.getString("world", "minigames_world");
         Map<String, String> flagsMap = new HashMap<>();
         ConfigurationSection flagsSec = sec.getConfigurationSection("flags");
@@ -41,14 +45,25 @@ public class ArenaDefinition {
             for (String flagName : flagsSec.getKeys(false)) {
                 String value = flagsSec.getString(flagName);
                 if (value == null) {
-                    throw new ConfigurationException("Flag '" + flagName +
-                        "' for arena '" + key + "' is null");
+                    throw new ConfigurationException(
+                        "Flag '" + flagName + "' for arena '" + key + "' is null"
+                    );
                 }
                 flagsMap.put(flagName.toUpperCase(), value.toUpperCase());
             }
         }
+
         long intervalSec = sec.getLong("resetIntervalSeconds", 60L);
         long intervalTicks = intervalSec * 20L;
+
+        com.auroraschaos.minigames.MinigamesPlugin.getInstance().getLogger().info(
+            String.format(
+                "[ArenaConfig] Parsed arena '%s' world=%s schematic=%s",
+                key,
+                world,
+                schematic
+            )
+        );
 
         return new ArenaDefinition(key, schematic, world, flagsMap, intervalTicks);
     }
