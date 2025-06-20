@@ -67,6 +67,7 @@ plugins/
 ### `config.yml`
 
 ```yaml
+verboseLogging: false
 minigames:
   TNT_RUN:
     display_name: "&aTNT Run"
@@ -89,6 +90,8 @@ minigames:
       - SOLO
       - TEAMS
 ```
+
+Enable `verboseLogging` to output additional debug information to the console.
 
 ### `SkyWars.yml`
 

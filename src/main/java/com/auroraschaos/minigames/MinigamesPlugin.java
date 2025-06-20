@@ -271,4 +271,15 @@ public class MinigamesPlugin extends JavaPlugin {
     public ConfigManager getConfigManager() {
         return configManager;
     }
+
+    /**
+     * Log a debug message when verboseLogging is enabled.
+     *
+     * @param message text to log
+     */
+    public void logVerbose(String message) {
+        if (configManager != null && configManager.isVerboseLogging()) {
+            getLogger().info("[VERBOSE] " + message);
+        }
+    }
 }

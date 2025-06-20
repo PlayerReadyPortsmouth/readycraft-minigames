@@ -56,7 +56,7 @@ public class ArenaDefinition {
         long intervalSec = sec.getLong("resetIntervalSeconds", 60L);
         long intervalTicks = intervalSec * 20L;
 
-        com.auroraschaos.minigames.MinigamesPlugin.getInstance().getLogger().info(
+        com.auroraschaos.minigames.MinigamesPlugin.getInstance().logVerbose(
             String.format(
                 "[ArenaConfig] Parsed arena '%s' world=%s schematic=%s",
                 key,

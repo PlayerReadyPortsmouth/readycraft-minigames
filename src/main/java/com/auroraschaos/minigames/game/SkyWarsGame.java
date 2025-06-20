@@ -136,6 +136,9 @@ public class SkyWarsGame extends GameInstance implements Listener {
         // 8) Start event scheduling and arena shrinking
         startEventSchedule();
         startShrinkSchedule();
+        plugin.logVerbose(String.format(
+                "[SkyWarsGame] Started with %d players on %s",
+                participants.size(), arena.getName()));
     }
 
     @Override
@@ -152,6 +155,7 @@ public class SkyWarsGame extends GameInstance implements Listener {
             spec.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
             spec.setGameMode(org.bukkit.GameMode.SURVIVAL);
         }
+        plugin.logVerbose("[SkyWarsGame] Ended on arena " + arena.getName());
     }
 
     @Override

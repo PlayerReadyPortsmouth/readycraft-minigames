@@ -103,7 +103,7 @@ public class GameManager {
         QueueEntry entry = new QueueEntry(entrants);
         queue.add(entry);
         plugin.getQueueScoreboardManager().updateQueueScoreboard(type, mode);
-        plugin.getLogger().info("Enqueued " + entrants.size()
+        plugin.logVerbose("Enqueued " + entrants.size()
                 + " player(s) for " + type + " [" + mode + "]");
 
         // Notify the entrants via chat
@@ -202,6 +202,8 @@ public class GameManager {
 
         toRemove.sendMessage(ChatColor.RED + "You left the queue for "
                 + type + " [" + mode + "].");
+        plugin.logVerbose("[GameManager] " + toRemove.getName()
+                + " dequeued from " + type + " [" + mode + "]");
 
         // Update the action-bar for everyone still in queue
         updateQueueActionBar(type, queue);
@@ -252,6 +254,8 @@ public class GameManager {
         // Inform queue that countdown has begun
         broadcastToQueue(queue, ChatColor.GREEN + "Minimum players reached! "
                 + "Game starts in " + COUNTDOWN_SECONDS + " seconds...");
+        plugin.logVerbose(String.format(
+                "[GameManager] Countdown started for %s [%s]", type, mode));
 
         // Create a repeating task that runs once per second (20 ticks)
         BukkitTask task = new BukkitRunnable() {
@@ -263,6 +267,8 @@ public class GameManager {
                 int currentSize = queue.size();
                 if (currentSize < getMinPlayers(type)) {
                     broadcastToQueue(queue, ChatColor.RED + "Countdown aborted: not enough players.");
+                    plugin.logVerbose(String.format(
+                            "[GameManager] Countdown aborted for %s [%s]", type, mode));
                     cancel();
                     countdownTasks.remove(key);
                     return;
@@ -289,6 +295,8 @@ public class GameManager {
                     }
                     queueMap.remove(key);
 
+                    plugin.logVerbose(String.format(
+                            "[GameManager] Countdown finished for %s [%s]", type, mode));
                     startNewGame(type, mode, participants);
                     return;
                 }
@@ -309,6 +317,7 @@ public class GameManager {
         if (task != null && !task.isCancelled()) {
             task.cancel();
         }
+        plugin.logVerbose("[GameManager] Countdown cancelled for key " + key);
     }
 
     /**
@@ -423,7 +432,7 @@ public class GameManager {
         // 3) Register & start the instance
         activeGames.put(instance.getId(), instance);
         instance.start();
-        plugin.getLogger().info("Started " + type + " [" + mode + "] with ID: " + instance.getId());
+        plugin.logVerbose("Started " + type + " [" + mode + "] with ID: " + instance.getId());
     }
 
     /**
@@ -443,7 +452,7 @@ public class GameManager {
         arenaService.resetArena(arena);
         arena.setInUse(false);
 
-        plugin.getLogger().info("Ended game " + instanceId + " (" + instance.getType() + ")");
+        plugin.logVerbose("Ended game " + instanceId + " (" + instance.getType() + ")");
     }
 
     // ------------------------------------------------------------

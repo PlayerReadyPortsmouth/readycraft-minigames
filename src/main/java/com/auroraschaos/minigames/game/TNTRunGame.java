@@ -106,6 +106,9 @@ public class TNTRunGame extends GameInstance implements Listener {
 
         // 5) Schedule block removal & game logic
         setupRemovalTask();
+        plugin.logVerbose(String.format(
+                "[TNTRunGame] Started with %d players on %s",
+                participants.size(), arena.getName()));
     }
 
     @Override
@@ -133,6 +136,7 @@ public class TNTRunGame extends GameInstance implements Listener {
             SpectatorUtil.returnToLobby(spec,
                 plugin.getServer().getWorlds().get(0).getSpawnLocation());
         }
+        plugin.logVerbose("[TNTRunGame] Ended on arena " + arena.getName());
     }
 
     @Override
@@ -164,6 +168,7 @@ public class TNTRunGame extends GameInstance implements Listener {
             // 3) Notify elimination
             p.sendMessage("§cYou have been eliminated! Now in Spectator mode.");
             p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 0.5f);
+            plugin.logVerbose("[TNTRunGame] Player eliminated: " + p.getName());
         }
     }
 

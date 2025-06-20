@@ -99,6 +99,9 @@ public class RaceGame extends GameInstance {
                 launchRaceLoop();
             }
         }.runTaskLater(plugin, secs * 20L);
+        plugin.logVerbose(String.format(
+                "[RaceGame] Started with %d players on %s",
+                participants.size(), arena.getName()));
     }
 
     private void launchRaceLoop() {
@@ -152,6 +155,7 @@ public class RaceGame extends GameInstance {
         // End in GameManager
         plugin.getStatsManager().recordGameResult(this);
         plugin.getGameManager().endGame(getId());
+        plugin.logVerbose("[RaceGame] Ended on arena " + arena.getName());
     }
 
     @Override

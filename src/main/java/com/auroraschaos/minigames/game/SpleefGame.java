@@ -126,6 +126,9 @@ public class SpleefGame extends GameInstance implements Listener {
                 }
             }
         }.runTaskTimer(plugin, 20L, 20L);
+        plugin.logVerbose(String.format(
+                "[SpleefGame] Started with %d players on %s",
+                participants.size(), arena.getName()));
     }
 
     @Override
@@ -144,6 +147,7 @@ public class SpleefGame extends GameInstance implements Listener {
         }
         scoreboardManager.clearArenaScoreboard(getId());
         lastThrow.clear();
+        plugin.logVerbose("[SpleefGame] Ended on arena " + arena.getName());
     }
 
     @Override
@@ -174,6 +178,7 @@ public class SpleefGame extends GameInstance implements Listener {
         scoreboardManager.showToPlayer(getId(), p);
         p.sendMessage("§cYou were eliminated!");
         p.playSound(p.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1f, 0.5f);
+        plugin.logVerbose("[SpleefGame] Player eliminated: " + p.getName());
     }
 
     // ---------------------- Event Handlers ----------------------

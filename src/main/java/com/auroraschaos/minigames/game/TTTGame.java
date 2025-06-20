@@ -120,6 +120,9 @@ public class TTTGame extends GameInstance implements Listener {
                 }
             }
         }.runTaskTimer(plugin, 20L, 20L);
+        plugin.logVerbose(String.format(
+                "[TTTGame] Started with %d players on %s",
+                participants.size(), arena.getName()));
     }
 
     @Override
@@ -136,6 +139,7 @@ public class TTTGame extends GameInstance implements Listener {
         }
         scoreboardManager.clearArenaScoreboard(getId());
         shop.unregister();
+        plugin.logVerbose("[TTTGame] Ended on arena " + arena.getName());
     }
 
     @EventHandler
@@ -197,6 +201,7 @@ public class TTTGame extends GameInstance implements Listener {
         scoreboardManager.showToPlayer(getId(), p);
         p.sendMessage("§cYou were eliminated!");
         checkWinCondition();
+        plugin.logVerbose("[TTTGame] Player eliminated: " + p.getName());
     }
 
     private void checkWinCondition() {

@@ -22,25 +22,24 @@ public class ArenaConfig {
             throw new ConfigurationException("'arenas' section is missing");
         }
 
-        java.util.logging.Logger log =
-            com.auroraschaos.minigames.MinigamesPlugin.getInstance().getLogger();
-
-        log.info("[ArenaConfig] Loading arena definitions...");
+        com.auroraschaos.minigames.MinigamesPlugin.getInstance()
+            .logVerbose("[ArenaConfig] Loading arena definitions...");
 
         Map<String, ArenaDefinition> map = new HashMap<>();
         for (String key : section.getKeys(false)) {
             ConfigurationSection sec = section.getConfigurationSection(key);
             if (sec == null) {
-                log.warning("[ArenaConfig] Section for '" + key + "' is missing");
+                com.auroraschaos.minigames.MinigamesPlugin.getInstance()
+                    .getLogger()
+                    .warning("[ArenaConfig] Section for '" + key + "' is missing");
                 continue;
             }
             map.put(key.toLowerCase(), ArenaDefinition.from(sec));
         }
 
-        log.info(String.format(
-            "[ArenaConfig] Loaded %d arena definitions",
-            map.size()
-        ));
+        com.auroraschaos.minigames.MinigamesPlugin.getInstance().logVerbose(
+            String.format("[ArenaConfig] Loaded %d arena definitions", map.size())
+        );
 
         return new ArenaConfig(map);
     }

@@ -1,3 +1,4 @@
+verboseLogging: false
 minigames:
   TNT_RUN:
     display_name: "§cTNT Run"

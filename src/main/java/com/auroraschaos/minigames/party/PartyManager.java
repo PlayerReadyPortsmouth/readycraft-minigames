@@ -75,6 +75,9 @@ public class PartyManager {
         // Create a scoreboard Team for this party
         registerPartyTeam(party);
 
+        plugin.logVerbose("[PartyManager] Created party " + party.getId()
+                + " with leader " + leader.getName());
+
         return party;
     }
 
@@ -103,6 +106,7 @@ public class PartyManager {
         if (team != null) {
             team.unregister();
         }
+        plugin.logVerbose("[PartyManager] Disbanded party " + partyId);
     }
 
     // ----------------------------------------------------------------
@@ -133,6 +137,8 @@ public class PartyManager {
         if (team != null) {
             team.addEntry(invitee.getName());
         }
+        plugin.logVerbose("[PartyManager] Added " + invitee.getName()
+                + " to party " + partyId);
         return true;
     }
 
@@ -167,6 +173,8 @@ public class PartyManager {
         if (party.isEmpty()) {
             disbandParty(partyId);
         }
+        plugin.logVerbose("[PartyManager] Removed " + member.getName()
+                + " from party " + partyId);
         return true;
     }
 

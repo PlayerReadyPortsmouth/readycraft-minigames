@@ -71,14 +71,14 @@ public class StatsManager {
         }
 
         statsStorage = YamlConfiguration.loadConfiguration(statsFile);
-        plugin.getLogger().info("[StatsManager] Flatfile storage initialized at " + statsFile);
+        plugin.logVerbose("[StatsManager] Flatfile storage initialized at " + statsFile);
     }
 
     private void initMySqlStorage() {
         // StatsConfig.MySQLConfig cfg = statsConfig.getMysqlConfig();
         // String url = "jdbc:mysql://" + cfg.getHost() + ":" + cfg.getPort() + "/" + cfg.getDatabase();
         // ... set up DataSource ...
-        plugin.getLogger().info("[StatsManager] MySQL storage selected, initialization pending.");
+        plugin.logVerbose("[StatsManager] MySQL storage selected, initialization pending.");
     }
 
     private void scheduleAutoSave() {
@@ -89,7 +89,7 @@ public class StatsManager {
             intervalTicks,
             intervalTicks
         );
-        plugin.getLogger().info("[StatsManager] Scheduled auto-save every "
+        plugin.logVerbose("[StatsManager] Scheduled auto-save every "
             + statsConfig.getAutoSaveIntervalSeconds() + " seconds.");
     }
 
@@ -126,7 +126,7 @@ public class StatsManager {
                 saveFlatfile();
             }
         } else {
-            plugin.getLogger().info("[StatsManager] (MySQL) recordWin for " + playerUUID + " in " + gameType);
+            plugin.logVerbose("[StatsManager] (MySQL) recordWin for " + playerUUID + " in " + gameType);
         }
     }
 
@@ -139,7 +139,7 @@ public class StatsManager {
                 saveFlatfile();
             }
         } else {
-            plugin.getLogger().info("[StatsManager] (MySQL) recordLoss for " + playerUUID + " in " + gameType);
+            plugin.logVerbose("[StatsManager] (MySQL) recordLoss for " + playerUUID + " in " + gameType);
         }
     }
 
