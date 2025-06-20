@@ -21,7 +21,7 @@ public class ArenaDefinitionRepository {
                 Map.Entry::getValue
             ));
 
-        com.auroraschaos.minigames.MinigamesPlugin.getInstance().getLogger().info(
+        com.auroraschaos.minigames.MinigamesPlugin.getInstance().logVerbose(
             String.format(
                 "[ArenaConfig] Repository initialised with %d arenas",
                 this.definitions.size()

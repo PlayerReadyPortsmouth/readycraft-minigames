@@ -1,7 +1,7 @@
 package com.auroraschaos.minigames.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.auroraschaos.minigames.MinigamesPlugin;
 import java.util.Map;
 
 import com.auroraschaos.minigames.config.TTTConfig;
@@ -10,7 +10,7 @@ import com.auroraschaos.minigames.config.TTTConfig;
  * Central manager for loading and validating all plugin configuration files.
  */
 public class ConfigManager {
-    private final JavaPlugin plugin;
+    private final MinigamesPlugin plugin;
     private final FileConfiguration config;
 
     private ArenaConfig arenaConfig;
@@ -25,7 +25,10 @@ public class ConfigManager {
     //private QueueConfig queueConfig;
     // ... other sub-configs as needed
 
-    public ConfigManager(JavaPlugin plugin) {
+    /** Whether verbose logging is enabled via config.yml. */
+    private boolean verboseLogging;
+
+    public ConfigManager(MinigamesPlugin plugin) {
         this.plugin = plugin;
         this.plugin.saveDefaultConfig();
         this.config = plugin.getConfig();
@@ -41,16 +44,32 @@ public class ConfigManager {
         }
         // Parse each section
         arenaConfig       = parseArenaConfig();
+        plugin.logVerbose("[ConfigManager] Arena config loaded with "
+                + arenaConfig.getArenas().size() + " arenas");
+
         gameModeConfig    = parseGameModeConfig();
+        plugin.logVerbose("[ConfigManager] Game mode config loaded");
+
         partyConfig       = parsePartyConfig();
+        plugin.logVerbose("[ConfigManager] Party config loaded");
+
         statsConfig       = parseStatsConfig();
+        plugin.logVerbose("[ConfigManager] Stats config loaded");
+
         spleefConfig      = parseSpleefConfig();
+        plugin.logVerbose("[ConfigManager] Spleef config loaded");
+
         tttConfig         = parseTTTConfig();
+        plugin.logVerbose("[ConfigManager] TTT config loaded");
         //guiConfig         = parseGuiConfig();
         //scoreboardConfig  = parseScoreboardConfig();
         //countdownConfig   = parseCountdownConfig();
         //queueConfig       = parseQueueConfig();
         // Add more as plugin evolves
+
+        // Root-level options
+        verboseLogging = config.getBoolean("verboseLogging", false);
+        plugin.logVerbose("[ConfigManager] verboseLogging=" + verboseLogging);
     }
 
     private ArenaConfig parseArenaConfig() throws ConfigurationException {
@@ -142,6 +161,8 @@ public class ConfigManager {
     public StatsConfig getStatsConfig() { return statsConfig; }
     public SpleefConfig getSpleefConfig() { return spleefConfig; }
     public TTTConfig getTTTConfig() { return tttConfig; }
+    /** @return true if verbose logging is enabled. */
+    public boolean isVerboseLogging() { return verboseLogging; }
     //public GuiConfig getGuiConfig() { return guiConfig; }
     //public ScoreboardConfig getScoreboardConfig() { return scoreboardConfig; }
     //public CountdownConfig getCountdownConfig() { return countdownConfig; }

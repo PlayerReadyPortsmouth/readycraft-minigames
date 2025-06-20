@@ -271,7 +271,7 @@ public abstract class GameInstance {
             // Reset and free the arena
             plugin.getArenaService().resetArena(arena);
             arena.setInUse(false);
-            Bukkit.getLogger().info("Game " + id + " (" + type + ") ended early due to too few players.");
+            plugin.logVerbose("Game " + id + " (" + type + ") ended early due to too few players.");
         }
     }
 }

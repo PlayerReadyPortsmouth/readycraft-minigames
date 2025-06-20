@@ -29,7 +29,7 @@ public class ArenaFactory {
             );
         }
 
-        plugin.getLogger().info(String.format(
+        plugin.logVerbose(String.format(
             "[ArenaFactory] Allocating slot for '%s' in world '%s'",
             def.getKey(), world.getName()
         ));
@@ -39,7 +39,7 @@ public class ArenaFactory {
             originVec.getBlockX(), originVec.getBlockY(), originVec.getBlockZ()
         );
 
-        plugin.getLogger().info(String.format(
+        plugin.logVerbose(String.format(
             "[ArenaFactory] Pasting schematic '%s' at %s",
             def.getSchematic(), originVec
         ));
