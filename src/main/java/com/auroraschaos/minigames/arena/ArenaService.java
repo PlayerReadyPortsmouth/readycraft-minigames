@@ -41,26 +41,43 @@ public class ArenaService {
      * Instantiate all arenas defined in config and register them.
      */
     public void initializeAll() {
+        plugin.getLogger().info("[ArenaService] Starting arena initialization...");
+        plugin.getLogger().info(String.format(
+            "[ArenaService] %d arena definitions found.",
+            definitionRepo.getAll().size()
+        ));
+
         for (ArenaDefinition def : definitionRepo.getAll()) {
+            plugin.getLogger().info(String.format(
+                "[ArenaService] Preparing arena '%s' (world=%s, schematic=%s)",
+                def.getKey(), def.getWorldName(), def.getSchematic()
+            ));
+
             try {
                 Arena arena = arenaFactory.create(plugin, def);
                 registry.register(arena);
-                // Schedule its auto-reset
                 resetService.scheduleReset(arena, def.getResetIntervalTicks());
-                plugin.getLogger().info(
-                    String.format("[ArenaService] Registered arena '%s' at %s",
-                        arena.getName(), arena.getOrigin())
-                );
+                plugin.getLogger().info(String.format(
+                    "[ArenaService] Registered arena '%s' at %s",
+                    arena.getName(), arena.getOrigin()
+                ));
             } catch (ArenaCreationException ex) {
-                plugin.getLogger().warning(
-                    String.format("[ArenaService] Failed to create arena '%s': %s",
-                        def.getKey(), ex.getMessage())
+                plugin.getLogger().log(
+                    java.util.logging.Level.WARNING,
+                    String.format(
+                        "[ArenaService] Failed to create arena '%s'",
+                        def.getKey()
+                    ),
+                    ex
                 );
             }
         }
-        plugin.getLogger().info(
-            String.format("[ArenaService] Initialized %d arenas.", registry.count())
-        );
+
+        plugin.getLogger().info(String.format(
+            "[ArenaService] Initialized %d arenas.",
+            registry.count()
+        ));
+        plugin.getLogger().info("[ArenaService] Arena initialization complete.");
     }
 
     /**  

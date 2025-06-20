@@ -20,6 +20,13 @@ public class ArenaDefinitionRepository {
                 e -> e.getKey().toLowerCase(),
                 Map.Entry::getValue
             ));
+
+        com.auroraschaos.minigames.MinigamesPlugin.getInstance().getLogger().info(
+            String.format(
+                "[ArenaConfig] Repository initialised with %d arenas",
+                this.definitions.size()
+            )
+        );
     }
 
     public Optional<ArenaDefinition> get(String key) {
